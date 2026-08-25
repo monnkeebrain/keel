@@ -84,3 +84,12 @@ This log is the only legitimate input for changing METHOD.md
   before push" as mandatory step; fix applied — adapt now writes root
   AGENTS.md/.hermes.md + adapters/owui-system-prompt.md, verify checks
   those paths, orphans removed.
+
+## F-006 · 2026-08-25 · Arm C · OWUI+OT × Qwen3.8-27b
+- Class: environment
+- What happened: plain `git pull` invoked a pager inside the non-TTY agent
+  shell and hung; the agent detected the hang, killed the process, reran
+  with pager disabled, and completed bootstrap correctly.
+- Disposition: noted + clarified — laws/stack.md Runtime gains:
+  git inspection runs with --no-pager (or GIT_PAGER=cat); agent shells
+  have no TTY.

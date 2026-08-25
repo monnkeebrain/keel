@@ -3,7 +3,7 @@
 Regenerated snapshot — bounded by design. History belongs to
 decisions.md and archive/, never here.
 
-- Generated at: 2026-08-25 18:28Z
+- Generated at: 2026-08-25 18:48Z
 - Phase: P1 — mechanical core built; entering P2 dogfood
 - Open intents: 0 review · 0 blocked
 - Active work: 0

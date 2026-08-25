@@ -16,3 +16,4 @@ Versioned toolchain constraints. Packs bind execution to this file.
 ## Runtime
 
 - Git is the only runtime dependency.
+- Git inspection commands run with `--no-pager` (or `GIT_PAGER=cat`); agent shells have no TTY.
