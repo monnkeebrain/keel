@@ -3,13 +3,13 @@
 Regenerated snapshot — bounded by design. History belongs to
 decisions.md and archive/, never here.
 
-- Generated at: 2026-08-25 17:38Z
+- Generated at: 2026-08-25 17:56Z
 - Phase: P1 — mechanical core built; entering P2 dogfood
 - Open intents: 0 review · 0 blocked
 - Active work: 0
-- Ready to launch: 1 (US-14)
-- Backlog: 0 · Done: 13
+- Ready to launch: 0
+- Backlog: 0 · Done: 14
 
-- Resume cue: Origin live (github.com/monnkeebrain/keel) — P-BOOT strict branch now active. Complete resume matrix: cold-start WITH remote × Hermes × second model. Then one harness-driven story loop end-to-end.
+- Resume cue: US-14 accepted. Hermes×grok-4.6 remote story-loop PASS; first-message BOOT FAIL (F-004: adapter not at repo root). Remaining: clean Hermes cold-start; OWUI+OT × second model with remote.
 
-- Last verified: 2026-08-25 · OWUI+OT cold-start PASS (no-remote variant) · US-13 full loop PASS
+- Last verified: 2026-08-25 · OWUI+OT cold-start PASS (no-remote) · US-13 full loop PASS · US-14 accept PASS (Hermes×grok-4.6) · Hermes first-message BOOT FAIL (F-004)

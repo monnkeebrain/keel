@@ -282,7 +282,7 @@
     "title": "Seed stack law (laws/stack.md)",
     "epic": "E5",
     "priority": "p1",
-    "status": "ready",
+    "status": "done",
     "as_a": "agent compiling a run pack or operator trusting constraints",
     "i_want": "keel toolchain constraints held as a versioned law file",
     "so_that": "packs bind execution to real stack rules instead of an empty laws dir",
