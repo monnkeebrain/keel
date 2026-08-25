@@ -344,5 +344,30 @@
       "bin/render runs clean on this repo and bin/verify stays green afterwards",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-17",
+    "title": "bin/init bootstraps a local git repository when none exists",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "staff member who downloaded the keel repo as a ZIP archive",
+    "i_want": "bin/init to leave me with a working local git repository without extra steps",
+    "so_that": "the method commit discipline and agent bootstrap work even when I skipped cloning",
+    "ac": [
+      "When .git is absent, bin/init creates a local git repository with branch main before resetting artifacts and prints that it entered local-only mode",
+      "After init on a ZIP-style folder, git status executes successfully and lists the workspace files as untracked",
+      "When .git already exists, init behaves exactly as before with no git init call",
+      "The double-run guard is unchanged: second run without --force exits non-zero naming --force",
+      "bin/init replaces PLAN.md with a blank project-plan stub carrying no keel build phases",
+      "bin/init replaces README.md with an instance edition that keeps the usage sections (start, loop, tools, layout, governance) but strips keel status and build history",
+      "After init, no file outside archive-less method tooling contains references to keel build stories US-01 to US-17, decision IDs D-nn, failure IDs F-nn, or amendment IDs A-nn"
+    ],
+    "dod": [
+      "Uses the existing subprocess-based git helper pattern, stdlib only",
+      "Template texts live as constants in one place so upstream improvements ship via pulls",
+      "README documents the ZIP path alongside clone and template options",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
