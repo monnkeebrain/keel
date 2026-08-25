@@ -14,8 +14,13 @@ every future session.
 3. Read the target story in `data/stories.json`
 4. Work. Then: update STATE.md, append residue to `decisions.md`, commit.
 
-Bootstrap ritual for ephemeral environments (Open Terminal containers etc.):
-`git pull && cat STATE.md` before anything else.
+Bootstrap ritual: if an origin is configured, `git pull --ff-only` before
+anything else; if not (local-only mode), go straight to STATE.md.
+Local-only is a first-class mode, not a degraded one.
+
+Remotes: when work must sync across machines/instances, use a private
+GitHub or GitLab repository. Keel requires nothing from hosting beyond
+push/pull — pick whichever your team already has.
 
 ## 1. Invariants (Tier A — change rarely, see AMENDMENTS.md)
 
@@ -62,8 +67,12 @@ Projections (never hand-edit):
 Every session starts here — including "quick questions". No exceptions.
 
 1. Work only inside the repo root. Not in a repo → stop, ask operator.
-2. Sync truth: `git pull --ff-only` (fresh environment: clone first).
-   Pull fails → stop and report. Never merge, never force.
+2. Sync truth:
+   - Origin configured → `git pull --ff-only` (fresh environment:
+     clone first). Pull fails → STOP and report. Never merge, never
+     force.
+   - No origin → say `origin: none — local mode`, continue; local
+     HEAD is canonical. [A-002, in trial]
 3. Read `STATE.md` completely.
 4. Read METHOD §1 (invariants). If your adapter's summary and the repo
    disagree, the repo wins.
