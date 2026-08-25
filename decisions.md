@@ -3,6 +3,16 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-005 · 2026-08-25 · Method vs instance: bin/init splits keel into template and workspace
+Rationale: keel repo conflated the method with its own dogfood instance —
+staff cloning it inherited 14 stories, decision history and failure logs.
+A delivery method must instantiate clean per project while staying
+upgradeable from upstream.
+Consequences: fresh clones run bin/init once -> empty contracts/ledgers,
+archive cleared, src/ created as project-code home, method files byte-
+identical so pulls deliver improvements without touching instance data.
+Refs: US-15; PLAN P3; FAILURES F-002 (local-first mode).
+
 ## D-004 · 2026-08-25 · First standing law: laws/stack.md
 Rationale: Packs were compiling against an empty laws/ directory, so
 execution was not bound to any stack constraint. US-14 seeds the
