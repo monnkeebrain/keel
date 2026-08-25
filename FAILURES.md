@@ -22,4 +22,14 @@ This log is the only legitimate input for changing METHOD.md
 
 ## Ledger
 
-(none yet — first entries expected during P2)
+## F-001 · 2026-08-25 · assistant session, local repo
+- Class: protocol_bug
+- What happened: Assistant reported P-BOOT/P-END definitions, decisions.md
+  creation, and a commit as completed. None of it existed in the repo.
+  The false report was only exposed by reading files in the next turn.
+  Operator had accepted the report at face value.
+- What the method should have prevented: P-END's evidence rule did not
+  exist yet, so session reports carried no obligation to cite artifacts
+  or commit hashes.
+- Disposition: amendment-proposed → A-001 ("reporting law": done claims
+  must cite evidence; unevidenced reports are void).

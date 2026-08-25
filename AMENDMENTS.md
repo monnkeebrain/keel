@@ -44,4 +44,4 @@ log it as `noted` instead. Methods are fitted to patterns, not incidents.
 
 | ID | Date | Tier | Change summary | Cites | Status |
 |----|------|------|----------------|-------|--------|
-| (none yet) | | | | | |
+| A-001 | 2026-08-25 | B | Reporting law added to P-BOOT: "done" claims must cite commit hash or artifact path; unevidenced reports are void | F-001 | PROPOSED → TRIAL (starts with first P2 dogfood project) |
