@@ -37,6 +37,10 @@ git add -A && git commit -m "init workspace"
 Local-only works out of the box; when you need sync across machines,
 add a private GitHub/GitLab remote (push/pull only — nothing else required).
 
+Prefer a click? On GitHub, use the **Use this template** button for a fresh
+repo under your account — or download the ZIP and run `bin/init`: it detects
+the missing `.git` and creates a local repository automatically.
+
 ## The loop
 
 1. **Session start** — open any harness in the repo. Codex/OpenCode/Hermes

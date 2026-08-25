@@ -80,6 +80,5 @@ The human signs (commit `sign US-xx`) or requests changes. You never promote
 your own draft to ready, and you never accept completed work — acceptance
 always belongs to the human.
 
-Worked case study: US-13/US-14 in this repository's history — including the
-canonical ending where the executing agent reported `DoD-2 PENDING` and
-waited for "Accept or reject."
+Canonical ending: report the evidence table with every DoD resolved, mark
+acceptance items PENDING, then ask “Accept or reject.” — and wait.

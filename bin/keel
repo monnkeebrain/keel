@@ -424,9 +424,44 @@ def cmd_verify(args):
 
 
 # ---------------------------------------------------------------- init
+TEMPLATE_PLAN = """# PLAN
+
+Project milestones and phase gates live here.
+Add phases as they emerge; keep this file bounded — state belongs in STATE.md,
+history in decisions.md.
+"""
+
+TEMPLATE_README = """# <project name>
+
+A keel workspace: contracts in `data/stories.json`, standing constraints in
+`laws/`, decision residue in `decisions.md`, live status in `STATE.md`,
+human overview generated to `overview.html`. Project code lives in `src/`.
+
+## Loop
+
+1. Session start \u2014 any agent harness reads the root `AGENTS.md` / `.hermes.md`
+   (Open WebUI: paste `adapters/owui-system-prompt.md`). Agent emits
+   `BOOT ok \u00b7 <phase> \u00b7 <n ready> \u00b7 <cue>` before touching anything.
+2. Intent \u2192 contract \u2014 `skills/story-workshop/SKILL.md`: five question rounds,
+   draft story, `bin/gate US-xx`, human signs (`sign US-xx`).
+3. Execute \u2014 `bin/pack US-xx`; work inside scope; verify every AC and DoD.
+4. Acceptance \u2014 evidence into `archive/evidence/`, story to review;
+   the human judges (see `overview.html`) and commits `accept US-xx`.
+5. Session end \u2014 `bin/state`, residue to `decisions.md`, commit + push.
+
+Local-only by default; add a private GitHub/GitLab origin when you need sync.
+Rules of the road: agents never accept their own work; only logged failures
+(FAILURES.md) may change the method; complexity must pay rent.
+"""
+
+
 def cmd_init(args):
     import shutil
     stories = load_stories()
+    if not (ROOT / ".git").exists():
+        subprocess.run(["git", "init", "-b", "main", str(ROOT)], check=True,
+                       capture_output=True)
+        print("git repository created on branch main \u2014 local-only mode")
     if not args.force and not stories:
         sys.exit("init: this workspace already looks initialized (stories.json is empty). Use --force to re-init.")
     STORIES.write_text("[]\n", encoding="utf-8")
@@ -459,6 +494,18 @@ def cmd_init(args):
     cmd_state(argparse.Namespace(phase="P0 \u2014 project start",
                                  cue="Capture your first intent via skills/story-workshop: five question rounds, draft story, bin/gate, operator sign.",
                                  verified="never"))
+    plan = ROOT / "PLAN.md"
+    plan.write_text(TEMPLATE_PLAN, encoding="utf-8")
+    (ROOT / "README.md").write_text(TEMPLATE_README, encoding="utf-8")
+    bad = []
+    pat = re.compile(r"\b(?:US|D|F|A)-\d+\b")
+    for pth in [ROOT / "data" / "stories.json", ROOT / "decisions.md",
+                ROOT / "PLAN.md", ROOT / "README.md", ROOT / "STATE.md"]:
+        for m in pat.finditer(pth.read_text(encoding="utf-8")):
+            bad.append(f"{pth.relative_to(ROOT)}: {m.group(0)}")
+    if bad:
+        sys.exit("init: purity check FAILED \u2014 keel build identifiers remain:\n  "
+                 + "\n  ".join(bad) + "\nFix TEMPLATE_ constants upstream, then re-run.")
     print("init complete:")
     print("  - stories.json emptied, decisions/ledgers reset (rules kept)")
     print("  - archive cleared, overview.html removed (run bin/render when ready)")
