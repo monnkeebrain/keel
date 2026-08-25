@@ -276,5 +276,26 @@
       "Documented in METHOD.md section 4 toolchain line",
       "Committed via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-14",
+    "title": "Seed stack law (laws/stack.md)",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "agent compiling a run pack or operator trusting constraints",
+    "i_want": "keel toolchain constraints held as a versioned law file",
+    "so_that": "packs bind execution to real stack rules instead of an empty laws dir",
+    "ac": [
+      "laws/stack.md exists with three sections: Toolchain, Artifacts, Runtime",
+      "Toolchain section states stdlib-Python-only for bin/, no pip installs, no build step",
+      "Artifacts section states markdown/JSON files in git, no external database",
+      "Runtime section names git as the only runtime dependency",
+      "bin/pack output for any story lists law/stack.md under its Laws heading"
+    ],
+    "dod": [
+      "File totals 40 lines or fewer",
+      "Committed via accept flow with evidence list"
+    ]
   }
 ]
