@@ -121,10 +121,13 @@ At phase end or when archive grows: run distill, move raw log to
 ## 4. Toolchain
 
 `bin/keel` dispatcher plus thin wrappers: `bin/gate` · `bin/pack` ·
-`bin/state` · `bin/distill` · `bin/render` · `bin/adapt` · `bin/boot`.
+`bin/state` · `bin/distill` · `bin/render` · `bin/adapt` · `bin/boot` ·
+`bin/verify`.
 Stdlib Python only — no pip installs — so it runs identically in OT slim
 containers, VPSes, and locally. Invocation: `bin/gate US-04`,
-`bin/state --cue "…"`, `bin/render`, `bin/adapt`, `bin/boot`.
+`bin/state --cue "…"`, `bin/render`, `bin/adapt`, `bin/verify`, `bin/boot`.
+Run `bin/verify` after any manual repo surgery or before trusting an
+unfamiliar local copy — it exits non-zero on schema/adapters problems.
 
 ## 5. Harness notes
 
