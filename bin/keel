@@ -525,7 +525,8 @@ def cmd_boot(args):
     stories = load_stories()
     ready = sum(1 for s in stories if s["status"] == "ready")
     sf = parse_state_fields(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
-    print(f"BOOT ok · {sf.get('phase','?')} · {ready} ready · {sf.get('resume_cue','-')}")
+    ver = (ROOT / "VERSION").read_text(encoding="utf-8").strip() if (ROOT / "VERSION").exists() else "dev"
+    print(f"BOOT ok · keel v{ver} · {sf.get('phase','?')} · {ready} ready · {sf.get('resume_cue','-')}")
 
 
 # ---------------------------------------------------------------- main

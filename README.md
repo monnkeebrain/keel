@@ -1,5 +1,7 @@
 # KEEL
 
+<!-- logo: drop docs/logo.png and reference it here -->
+
 A file-native method for human–machine delivery.
 
 One git repository per project. The repo holds everything that matters:
@@ -77,6 +79,11 @@ Stdlib Python only; no pip installs; no build step; git is the only runtime.
 | `archive/` | packs, evidence bundles, raw logs |
 | `src/` | your project's code |
 | `adapters/`, root `AGENTS.md`/`.hermes.md` | generated harness entry points |
+
+## More
+
+`docs/tips-and-tricks.md` — field-tested patterns.
+`docs/testing-matrix.md` — the provenance behind "it works".
 
 ## Governance
 
