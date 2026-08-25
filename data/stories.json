@@ -1,0 +1,259 @@
+[
+  {
+    "id": "US-01",
+    "title": "Shared Northstar design system as the visual source of truth",
+    "status": "done",
+    "epic": "E1",
+    "priority": "p0",
+    "as_a": "builder working with coding agents",
+    "i_want": "a single design system page that defines tokens, components, and AI UI rules",
+    "so_that": "every control center page stays visually consistent without reinventing styles",
+    "ac": [
+      "Design-System.html is available in the controlcenter folder and opens in the browser",
+      "Light and dark themes are defined via data-theme and --ds-* tokens",
+      "Core components are documented",
+      "An AI agent spec section describes rules agents must follow",
+      "northstar.css extracts shared tokens/components for multi-page use"
+    ],
+    "dod": [
+      "No hardcoded one-off brand colors outside tokens",
+      "Typography uses Inter and JetBrains Mono",
+      "Readable in light and dark",
+      "Linked from control center navigation"
+    ]
+  },
+  {
+    "id": "US-02",
+    "title": "System plan page with map, workflow, roles, and handoff",
+    "status": "done",
+    "epic": "E1",
+    "priority": "p0",
+    "as_a": "owner handing work to an agent",
+    "i_want": "a system plan page that maps modules, workflow, users, data model, story coverage, status, build log, and principles",
+    "so_that": "architecture and handoff context live in one scrollable, linkable document",
+    "ac": [
+      "systemplan.html uses Northstar shell and system-plan patterns",
+      "Eight sections exist",
+      "Modules M01–M06 represented",
+      "Story coverage lists US-01–US-12 with deep links",
+      "Theme toggle persists via localStorage.ns-theme",
+      "Sticky TOC highlights active section"
+    ],
+    "dod": [
+      "Matches Northstar visual rules",
+      "Cross-links work",
+      "Mobile nav usable",
+      "Build log has foundation entries"
+    ]
+  },
+  {
+    "id": "US-03",
+    "title": "Control center shell with cross-page navigation and theme",
+    "status": "done",
+    "epic": "E1",
+    "priority": "p0",
+    "as_a": "daily operator of the control center",
+    "i_want": "the same sidebar, topbar, brand, and theme behavior on every page",
+    "so_that": "moving between pages feels like one product",
+    "ac": [
+      "Sidebar lists primary workspace pages",
+      "Active page indicated",
+      "Future pages as disabled stubs until live",
+      "Theme shared via localStorage.ns-theme",
+      "Mobile nav toggle with backdrop"
+    ],
+    "dod": [
+      "Live pages share shell structure",
+      "Keyboard reachable theme and nav",
+      "Consistent CC brand"
+    ]
+  },
+  {
+    "id": "US-04",
+    "title": "Epic-clustered story book with accordion details",
+    "status": "done",
+    "epic": "E2",
+    "priority": "p0",
+    "as_a": "owner or coding agent",
+    "i_want": "all user stories on one page grouped by epic, each expandable as an accordion",
+    "so_that": "I can scan the backlog and open only the story I need",
+    "ac": [
+      "Epics E1–E4 as sections",
+      "Each story accordion with id us-XX",
+      "Header shows ID, title, status, priority",
+      "Body shows As a / I want / So that",
+      "Expand/collapse all works"
+    ],
+    "dod": [
+      "Deep link opens and expands story",
+      "Keyboard accessible details",
+      "Northstar tokens only"
+    ]
+  },
+  {
+    "id": "US-05",
+    "title": "AC and DoD checklists inside every story",
+    "status": "done",
+    "epic": "E2",
+    "priority": "p0",
+    "as_a": "reviewer",
+    "i_want": "Akzeptanzkriterien and Definition of Done listed as checklists inside each story",
+    "so_that": "acceptance is explicit and quality bars are not lost in chat",
+    "ac": [
+      "Every story has Akzeptanzkriterien section",
+      "Every story has Definition of Done section",
+      "Readable as plain text",
+      "Optional notes block allowed"
+    ],
+    "dod": [
+      "Uses terms Akzeptanzkriterien and Definition of Done",
+      "Foundation stories have testable AC",
+      "DoD covers theme/a11y/links/tokens where relevant"
+    ]
+  },
+  {
+    "id": "US-06",
+    "title": "Filter, search, and deep-link stories by ID",
+    "status": "done",
+    "epic": "E2",
+    "priority": "p1",
+    "as_a": "operator with a growing backlog",
+    "i_want": "to filter by status/epic and search by text or ID",
+    "so_that": "I can find the right story without scrolling the entire book",
+    "ac": [
+      "Search filters by ID/title/text",
+      "Status filter works",
+      "Epic filter works",
+      "Hash #us-XX opens story",
+      "Zero-results state shown"
+    ],
+    "dod": [
+      "Filters keyboard usable",
+      "Clearing restores list",
+      "Hash works from system plan cards"
+    ]
+  },
+  {
+    "id": "US-07",
+    "title": "Coverage grid on system plan stays in sync with story book",
+    "status": "done",
+    "epic": "E2",
+    "priority": "p1",
+    "as_a": "owner",
+    "i_want": "the system plan coverage section to mirror story IDs, titles, and statuses",
+    "so_that": "the map and the book never disagree",
+    "ac": [
+      "Every story appears in plan section 5",
+      "Titles/statuses match",
+      "Cards link to #us-XX",
+      "Epic grouping identical"
+    ],
+    "dod": [
+      "Manual sync check documented",
+      "No orphan IDs"
+    ]
+  },
+  {
+    "id": "US-08",
+    "title": "Sprint board linked to story IDs and statuses",
+    "status": "done",
+    "epic": "E3",
+    "priority": "p1",
+    "as_a": "owner running a short delivery cadence",
+    "i_want": "a lightweight board of current sprint items tied to US IDs",
+    "so_that": "WIP and done are visible without leaving the control center",
+    "ac": [
+      "sprint-board.html shows ready/in progress/review/done columns",
+      "Cards reference US-XX and link to story book",
+      "Uses Northstar shell",
+      "Status can be reflected (manual HTML v1)"
+    ],
+    "dod": [
+      "Nav stub becomes active link",
+      "Does not invent missing stories",
+      "Empty columns have calm empty state"
+    ]
+  },
+  {
+    "id": "US-09",
+    "title": "Harness page with context pack and run checklist",
+    "status": "done",
+    "epic": "E4",
+    "priority": "p1",
+    "as_a": "owner starting an agent run",
+    "i_want": "a harness page that assembles the context pack (DS rules, plan sections, target story) and a run checklist",
+    "so_that": "agents receive consistent inputs every time",
+    "ac": [
+      "agent-harness.html explains required context inputs",
+      "Checklist covers DS AI spec, target US AC/DoD, stack constraint, report decisions",
+      "Links jump to DS, plan, stories, board",
+      "HTML/CSS/JS-only constraint stated prominently"
+    ],
+    "dod": [
+      "Shell nav stub becomes active",
+      "Does not duplicate full story text; links to source",
+      "Light/dark supported"
+    ]
+  },
+  {
+    "id": "US-10",
+    "title": "Dedicated build log with decision tags",
+    "status": "done",
+    "epic": "E3",
+    "priority": "p2",
+    "as_a": "coding agent or owner returning after a break",
+    "i_want": "a build log page with dated entries and tags",
+    "so_that": "decisions survive beyond chat history",
+    "ac": [
+      "Entries show date, title, body, story IDs, tags",
+      "Newest easy to find",
+      "Plan links to full log",
+      "Prefers decisions over transcripts"
+    ],
+    "dod": [
+      "At least three real entries when shipped",
+      "Reuses build-entry patterns",
+      "Light/dark supported"
+    ]
+  },
+  {
+    "id": "US-11",
+    "title": "Hub index that routes into all control center pages",
+    "status": "done",
+    "epic": "E3",
+    "priority": "p2",
+    "as_a": "returning user",
+    "i_want": "an index.html hub that cards out each area",
+    "so_that": "I have a single entry point",
+    "ac": [
+      "index.html lists live and planned modules",
+      "Live cards link correctly",
+      "Uses shared shell",
+      "Phase/next action above the fold"
+    ],
+    "dod": [
+      "All live pages one click away",
+      "Planned modules not broken links"
+    ]
+  },
+  {
+    "id": "US-12",
+    "title": "Copy-ready agent prompt blocks per story",
+    "status": "done",
+    "epic": "E4",
+    "priority": "p2",
+    "as_a": "owner",
+    "i_want": "a copy button that builds a prompt from narrative, AC, and DoD",
+    "so_that": "I can paste a precise task into Open WebUI",
+    "ac": [
+      "Generate prompt with ID, narrative, AC, DoD, stack constraints",
+      "Copy confirms success",
+      "Prompt tells agent to use Northstar tokens and not expand scope"
+    ],
+    "dod": [
+      "Works in modern browsers",
+      "No secrets",
+      "Fails gracefully if clipboard denied"
+    ]
+  }
+]
