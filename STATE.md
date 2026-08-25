@@ -3,13 +3,13 @@
 Regenerated snapshot — bounded by design. History belongs to
 decisions.md and archive/, never here.
 
-- Generated at: 2026-08-25 19:33Z
+- Generated at: 2026-08-25 20:15Z
 - Phase: P3 — staff rollout · P4 workshop skill next
 - Open intents: 0 review · 0 blocked
 - Active work: 0
 - Ready to launch: 0
-- Backlog: 0 · Done: 16
+- Backlog: 0 · Done: 17
 
-- Resume cue: P3 OPEN: pick one staff member + one real client project. They clone keel, run bin/init, work local-only with Codex/OpenCode using skills/story-workshop for intents. Exit: first end-to-end staff story without private instruction.
+- Resume cue: v0.1.0 release: staff pilot (P3) + stakeholder pilot (P4) + docs growth. Logo slot reserved at top of README.
 
-- Last verified: 2026-08-25 \u00b7 P2 matrix GREEN \u00b7 US-13/14 loops PASS (assistant + Hermes) \u00b7 US-15/16 skeleton+overview accepted
+- Last verified: 2026-08-25 \u00b7 P2 GREEN \u00b7 US-13..17 loops accepted \u00b7 A-001/002/003 confirmed \u00b7 v0.1.0 candidate

@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-006 · 2026-08-25 · Template purity enforced mechanically; three onboarding ramps
+Rationale: staff arrive however they arrive (clone, Use-this-template,
+downloaded ZIP). The workspace they land in must contain the full method
+and zero keel-build information — intent, not discipline, decides quality.
+Consequences: bin/init bootstraps git when missing (local-only mode),
+writes instance-edition PLAN/README from embedded constants, and fails
+with a listed violation if any build identifier (US/D/F/A-nn) survives the
+sweep. Upstream keeps history via git, instances keep cleanliness via scan.
+Refs: US-17; D-005; FAILURES F-002.
 ## D-005 · 2026-08-25 · Method vs instance: bin/init splits keel into template and workspace
 Rationale: keel repo conflated the method with its own dogfood instance —
 staff cloning it inherited 14 stories, decision history and failure logs.
