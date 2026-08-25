@@ -35,3 +35,13 @@ Follow PLAN.md §P2 runbook. Pass criteria per arm: correct BOOT line, story
 executed within protocol (when a ready story exists), STATE.md and
 decisions.md updated, evidence-cited closing report. Log deviations in
 FAILURES.md immediately — unlogged failures cannot drive changes.
+
+## Workshop skill validation (P4 pilot, round 1)
+
+| # | Stack | Scope | Result |
+|---|-------|-------|--------|
+| 7 | OpenCode, fresh `bin/init` workspace | story-workshop skill | PASS — 7 stories drafted, all `bin/gate PASS`, left in `backlog`, agent refused to self-sign |
+
+Operator report: *"All seven bin/gate PASS. Status: backlog. I will not
+sign them. Sign or revise."* — the canonical closing, reproduced verbatim
+by an agent that had never seen keel's history.

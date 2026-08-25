@@ -4,6 +4,7 @@ Regenerated snapshot — bounded by design. History belongs to
 decisions.md and archive/, never here.
 
 - Generated at: 2026-08-25 20:15Z
+- Workshop skill: first field run — 7 stories gated, sign pending
 - Phase: P3 — staff rollout · P4 workshop skill next
 - Open intents: 0 review · 0 blocked
 - Active work: 0
