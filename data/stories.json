@@ -327,7 +327,7 @@
     "title": "Overview v2 — human review ergonomics",
     "epic": "E5",
     "priority": "p1",
-    "status": "backlog",
+    "status": "ready",
     "as_a": "operator reviewing delivered work and deciding acceptance",
     "i_want": "the overview page to carry everything an acceptance decision needs onto one screen",
     "so_that": "human review is faster than opening files, and human+machine delivery is truly optimized",
