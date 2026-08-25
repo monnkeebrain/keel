@@ -255,5 +255,26 @@
       "No secrets",
       "Fails gracefully if clipboard denied"
     ]
+  },
+  {
+    "id": "US-13",
+    "title": "Repo health-check command (bin/verify)",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "staff member running a local-only keel instance",
+    "i_want": "one command that verifies my repo copy is sane",
+    "so_that": "I can trust my instance without asking the operator",
+    "ac": [
+      "bin/verify checks: stories.json parses as array, IDs unique, decisions.md headings match D-nn format, adapters match regeneration, overview.html newer than newest file under data/ or laws/",
+      "Each check prints one line prefixed PASS / WARN / FAIL",
+      "Exit code 0 when no FAIL, exit code 1 when any FAIL occurs",
+      "Stale-adapters detection works by regenerating adapter content in memory and diffing against files on disk"
+    ],
+    "dod": [
+      "Stdlib Python only, no pip installs",
+      "Documented in METHOD.md section 4 toolchain line",
+      "Committed via accept flow with evidence list"
+    ]
   }
 ]
