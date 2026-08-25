@@ -44,4 +44,5 @@ log it as `noted` instead. Methods are fitted to patterns, not incidents.
 
 | ID | Date | Tier | Change summary | Cites | Status |
 |----|------|------|----------------|-------|--------|
-| A-001 | 2026-08-25 | B | Reporting law added to P-BOOT: "done" claims must cite commit hash or artifact path; unevidenced reports are void | F-001 | PROPOSED → TRIAL (starts with first P2 dogfood project) |
+| A-001 | 2026-08-25 | B | Reporting law added to P-BOOT: "done" claims must cite commit hash or artifact path; unevidenced reports are void | F-001 | PROPOSED → TRIAL — first positive signal: cold-start agent self-applied evidence discipline unprompted |
+| A-002 | 2026-08-25 | B | Split P-BOOT pull semantics: no remote configured → note + continue (local truth canonical); remote configured + pull fails → hard stop. §0 ritual gains "origin optional in solo mode" | F-002 | PROPOSED → TRIAL (next dogfood project) |

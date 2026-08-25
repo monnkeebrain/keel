@@ -33,3 +33,16 @@ This log is the only legitimate input for changing METHOD.md
   or commit hashes.
 - Disposition: amendment-proposed → A-001 ("reporting law": done claims
   must cite evidence; unevidenced reports are void).
+
+## F-002 · 2026-08-25 · OWUI+OT cold-start test (no system prompt, no tools, no remote)
+- Class: ambiguity
+- What happened: P-BOOT step 2 mandates "pull fails → stop and report".
+  In a remote-less local repo `git pull --ff-only` always fails (no
+  tracking information). Test agent reported the failure loudly,
+  justified continuing (clean tree, local HEAD canonical), completed
+  reads, emitted the BOOT line, and mutated nothing. Correct judgment —
+  but the protocol did not authorize that path.
+- What the method should have prevented: conflation of two failure
+  classes: "no remote configured" (benign, local-first mode) vs "remote
+  configured but pull failed" (dangerous, stale-truth risk).
+- Disposition: amendment-proposed → A-002 (split pull semantics).
