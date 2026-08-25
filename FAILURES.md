@@ -58,3 +58,16 @@ This log is the only legitimate input for changing METHOD.md
   readers of an artifact must be changed in the same commit.
 - Disposition: noted + fixed same commit (writer emits bullet form).
   No METHOD change required.
+
+## F-004 · 2026-08-25 · Hermes desktop / grok-4.6
+- Class: environment
+- What happened: Operator first message was `boot`. Agent searched prior
+  sessions, ran `hermes doctor`, reported machine status, and did not emit
+  a BOOT line. BOOT emitted only after the operator said they were testing
+  the keel folder. Repo contained `adapters/.hermes.md` and
+  `adapters/AGENTS.md`; no `AGENTS.md` or `.hermes.md` at repo root. Hermes
+  desktop did not inject the adapter into the session prompt.
+- What the method should have prevented: PLAN P2 Arm B claims
+  zero-instruction Hermes entry via native `.hermes.md` discovery.
+  Generated adapter path and harness discovery path did not meet.
+- Disposition: noted

@@ -3,6 +3,14 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-004 · 2026-08-25 · First standing law: laws/stack.md
+Rationale: Packs were compiling against an empty laws/ directory, so
+execution was not bound to any stack constraint. US-14 seeds the
+toolchain rules as a versioned file instead of scattering them in METHOD.
+Consequences: every `bin/pack` now inlines `law/stack.md` under Laws;
+further stack changes are new versions of this file, not METHOD patches.
+Refs: US-14; METHOD §2 `laws/*.md`; bin/keel cmd_pack.
+
 ## D-003 · 2026-08-25 · Human overview is a first-class generated projection
 Rationale: The operator is always human and needs decision-grade overview
 (status, progress, problems) — the Erdt system-plan §06 proved the value;
