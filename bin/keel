@@ -326,7 +326,7 @@ def cmd_adapt(args):
         p = ROOT / name
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(content, encoding="utf-8")
-        print(f"adapted → adapters/{name} ({p.stat().st_size} bytes)")
+        print(f"adapted → {p.relative_to(ROOT)} ({p.stat().st_size} bytes)")
 
 
 # ---------------------------------------------------------------- verify
