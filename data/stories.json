@@ -297,5 +297,29 @@
       "File totals 40 lines or fewer",
       "Committed via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-15",
+    "title": "Clean project skeleton (bin/init)",
+    "epic": "E5",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "staff member starting a real client project with keel",
+    "i_want": "a command that turns a fresh keel clone into a clean project workspace with a code home",
+    "so_that": "I start from a blank contract sheet instead of inheriting the method repo history, and project code has a defined place",
+    "ac": [
+      "bin/init resets data/stories.json to an empty array and decisions.md to header plus format note only",
+      "FAILURES.md and AMENDMENTS.md keep their rules text but start with empty ledgers",
+      "archive/ contents are removed keeping directory structure, overview.html is deleted",
+      "src/.gitkeep is created as the home for project code",
+      "bin/, METHOD.md, laws/, adapters/, skills/, README.md, PLAN.md stay byte-identical",
+      "STATE.md is regenerated for a new project: phase P0 project start, resume cue about capturing first intent via story-workshop, last verified never",
+      "second run without --force exits non-zero with a message naming the --force flag"
+    ],
+    "dod": [
+      "Stdlib Python only, wired into bin/keel dispatcher plus bin/init wrapper",
+      "Documented in METHOD.md section 4 toolchain line",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
