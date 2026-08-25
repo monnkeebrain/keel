@@ -71,7 +71,7 @@ observation a person can make or a check a command can run.
 5. Save as story entry (status backlog), then run `bin/gate <ID>`.
 6. Fix blockers WITH the stakeholder — never silently rewrite their intent.
 
-## Closing (the US-14 pattern)
+## Closing
 
 Present a compact contract table: ID, title, triad, AC count, DoD count,
 scope summary. Then stop and say: **"Sign or revise."**

@@ -499,9 +499,15 @@ def cmd_init(args):
     (ROOT / "README.md").write_text(TEMPLATE_README, encoding="utf-8")
     bad = []
     pat = re.compile(r"\b(?:US|D|F|A)-\d+\b")
-    for pth in [ROOT / "data" / "stories.json", ROOT / "decisions.md",
-                ROOT / "PLAN.md", ROOT / "README.md", ROOT / "STATE.md"]:
-        for m in pat.finditer(pth.read_text(encoding="utf-8")):
+    for pth in sorted(ROOT.rglob("*")):
+        if ".git" in pth.parts or pth.is_dir() or pth.suffix.lower() not in (
+                ".md", ".json", ".txt", ".py", ".html", ".css", ".js"):
+            continue
+        try:
+            txt = pth.read_text(encoding="utf-8")
+        except Exception:
+            continue
+        for m in pat.finditer(txt):
             bad.append(f"{pth.relative_to(ROOT)}: {m.group(0)}")
     if bad:
         sys.exit("init: purity check FAILED \u2014 keel build identifiers remain:\n  "
