@@ -369,5 +369,27 @@
       "README documents the ZIP path alongside clone and template options",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-18",
+    "title": "Adaptive-depth elicitation in story-workshop",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "stakeholder or operator running the workshop skill",
+    "i_want": "question depth to scale with the size of my intent",
+    "so_that": "small requests stay welcome instead of people bypassing the skill they find lengthy",
+    "ac": [
+      "SKILL.md gains a triage step before R1 that classifies the intent as trivial, standard, or critical using blast radius, reversibility, and affected parties as criteria",
+      "Trivial path asks only the problem and verification rounds; standard path skips the edges round unless an answer triggers it; critical path runs all five",
+      "Each round presents all of its questions in a single batched message instead of one question per turn",
+      "Stakeholder may invoke an express lane at any point: remaining rounds collapse into one confirmation summary whose stated assumptions require explicit approval",
+      "bin/gate behavior unchanged: stories without verifiable outcomes park regardless of which path was taken"
+    ],
+    "dod": [
+      "SKILL.md carries a version note describing the change",
+      "Validated on one trivial and one standard intent through an agent arm",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
