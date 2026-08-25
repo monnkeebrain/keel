@@ -423,6 +423,50 @@ def cmd_verify(args):
     sys.exit(1 if fails else 0)
 
 
+# ---------------------------------------------------------------- init
+def cmd_init(args):
+    import shutil
+    stories = load_stories()
+    if not args.force and not stories:
+        sys.exit("init: this workspace already looks initialized (stories.json is empty). Use --force to re-init.")
+    STORIES.write_text("[]\n", encoding="utf-8")
+    DECISIONS.write_text(
+        "# DECISIONS\n\nNewest first. Format: `## D-nn \u00b7 YYYY-MM-DD \u00b7 title` followed by\n"
+        "Rationale / Consequences / Refs. Corrections via supersede, never edits.\n",
+        encoding="utf-8")
+    for name in ("FAILURES.md", "AMENDMENTS.md"):
+        path = ROOT / name
+        t = path.read_text(encoding="utf-8")
+        cut = t.index("\n## Ledger")
+        path.write_text(t[:cut] + "\n## Ledger\n\n(none yet)\n", encoding="utf-8")
+    for child in ARCHIVE.iterdir():
+        if child.name == ".gitkeep":
+            continue
+        if child.is_dir():
+            for g in child.iterdir():
+                if g.is_file():
+                    g.unlink()
+                else:
+                    shutil.rmtree(g)
+        else:
+            child.unlink()
+    ov = ROOT / "overview.html"
+    if ov.exists():
+        ov.unlink()
+    src = ROOT / "src"
+    src.mkdir(exist_ok=True)
+    (src / ".gitkeep").touch()
+    cmd_state(argparse.Namespace(phase="P0 \u2014 project start",
+                                 cue="Capture your first intent via skills/story-workshop: five question rounds, draft story, bin/gate, operator sign.",
+                                 verified="never"))
+    print("init complete:")
+    print("  - stories.json emptied, decisions/ledgers reset (rules kept)")
+    print("  - archive cleared, overview.html removed (run bin/render when ready)")
+    print("  - src/ created for project code")
+    print("  - STATE.md regenerated for P0")
+    print("Review the diff, then make your first commit (e.g. 'init workspace').")
+
+
 # ---------------------------------------------------------------- boot
 def cmd_boot(args):
     stories = load_stories()
@@ -441,6 +485,8 @@ def main():
     sub.add_parser("distill").set_defaults(fn=cmd_distill)
     sub.add_parser("render").set_defaults(fn=cmd_render)
     sub.add_parser("adapt").set_defaults(fn=cmd_adapt)
+    sub.add_parser("verify").set_defaults(fn=cmd_verify)
+    i = sub.add_parser("init"); i.add_argument("--force", action="store_true"); i.set_defaults(fn=cmd_init)
     sub.add_parser("verify").set_defaults(fn=cmd_verify)
     sub.add_parser("boot").set_defaults(fn=cmd_boot)
     args = ap.parse_args()
