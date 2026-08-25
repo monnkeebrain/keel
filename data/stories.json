@@ -350,7 +350,7 @@
     "title": "bin/init bootstraps a local git repository when none exists",
     "epic": "E5",
     "priority": "p1",
-    "status": "backlog",
+    "status": "ready",
     "as_a": "staff member who downloaded the keel repo as a ZIP archive",
     "i_want": "bin/init to leave me with a working local git repository without extra steps",
     "so_that": "the method commit discipline and agent bootstrap work even when I skipped cloning",
