@@ -44,5 +44,5 @@ log it as `noted` instead. Methods are fitted to patterns, not incidents.
 
 | ID | Date | Tier | Change summary | Cites | Status |
 |----|------|------|----------------|-------|--------|
-| A-001 | 2026-08-25 | B | Reporting law added to P-BOOT: "done" claims must cite commit hash or artifact path; unevidenced reports are void | F-001 | PROPOSED → TRIAL — first positive signal: cold-start agent self-applied evidence discipline unprompted |
+| A-001 | 2026-08-25 | B | Reporting law added to P-BOOT: "done" claims must cite commit hash or artifact path; unevidenced reports are void | F-001 | TRIAL — two positive signals: OWUI cold-start evidence column; Hermes×grok-4.6 halted at acceptance gate unprompted (DoD-2 PENDING, "Accept or reject."), operator confirmed human judgment occurred |
 | A-002 | 2026-08-25 | B | Split P-BOOT pull semantics: no origin → note "origin: none — local mode" + continue; origin configured + pull fails → hard stop. Local-only declared first-class; hosted standard = private GitHub/GitLab (push/pull only). Applied to METHOD §0 + P-BOOT | F-002 | TRIAL — operator confirmed direction 2026-08-25; staff rollout starts local-only |
