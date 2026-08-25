@@ -290,7 +290,7 @@ def build_adapter_files():
     return {
         "AGENTS.md": f"{BANNER}\n{core}\nFull manual: METHOD.md. Toolchain in bin/ (stdlib Python).\n",
         ".hermes.md": f"{BANNER}\n{core}\nFull manual: METHOD.md. Toolchain in bin/ (stdlib Python).\n",
-        "owui-system-prompt.md": f"<!-- AUTO-GENERATED system-prompt snippet for Open WebUI sessions bound to this repo -->\n{core}"
+        "adapters/owui-system-prompt.md": f"<!-- AUTO-GENERATED system-prompt snippet for Open WebUI sessions bound to this repo -->\n{core}"
         "\nYou have Open Terminal access: run `bin/*` commands directly; keep STATE.md updated at session end.\n",
     }
 
@@ -322,9 +322,9 @@ Unevidenced reports are void. Session end = P-END protocol in METHOD.md §3.
 
 def cmd_adapt(args):
     files = build_adapter_files()
-    ADAPTERS.mkdir(exist_ok=True)
     for name, content in files.items():
-        p = ADAPTERS / name
+        p = ROOT / name
+        p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text(content, encoding="utf-8")
         print(f"adapted → adapters/{name} ({p.stat().st_size} bytes)")
 
@@ -362,7 +362,7 @@ def cmd_verify(args):
 
     expected = build_adapter_files()
     stale = [n for n, c in expected.items()
-             if not (ADAPTERS / n).exists() or (ADAPTERS / n).read_text(encoding="utf-8") != c]
+             if not (ROOT / n).exists() or (ROOT / n).read_text(encoding="utf-8") != c]
     if stale:
         line("FAIL", f"adapters out of sync — run bin/adapt ({', '.join(stale)})")
     else:

@@ -71,3 +71,16 @@ This log is the only legitimate input for changing METHOD.md
   zero-instruction Hermes entry via native `.hermes.md` discovery.
   Generated adapter path and harness discovery path did not meet.
 - Disposition: noted
+
+## F-005 · 2026-08-25 · assistant session (fixing F-004's cause)
+- Class: protocol_bug
+- What happened: bin/adapt deployed entry points to adapters/ while native
+  discovery (Hermes .hermes.md/AGENTS.md, Codex/OpenCode AGENTS.md) reads
+  the repo root. Cold-start with bare "boot" therefore had no entry
+  artifact to find (F-004). PLAN Arm B promised zero-instruction entry.
+- What the method should have prevented: deployment path was never tested
+  against a real discovery mechanism before P2.
+- Disposition: amendment-proposed → A-003: P-END gains "run bin/verify
+  before push" as mandatory step; fix applied — adapt now writes root
+  AGENTS.md/.hermes.md + adapters/owui-system-prompt.md, verify checks
+  those paths, orphans removed.
