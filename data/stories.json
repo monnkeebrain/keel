@@ -303,7 +303,7 @@
     "title": "Clean project skeleton (bin/init)",
     "epic": "E5",
     "priority": "p0",
-    "status": "in_progress",
+    "status": "review",
     "as_a": "staff member starting a real client project with keel",
     "i_want": "a command that turns a fresh keel clone into a clean project workspace with a code home",
     "so_that": "I start from a blank contract sheet instead of inheriting the method repo history, and project code has a defined place",

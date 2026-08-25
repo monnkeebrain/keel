@@ -487,7 +487,6 @@ def main():
     sub.add_parser("adapt").set_defaults(fn=cmd_adapt)
     sub.add_parser("verify").set_defaults(fn=cmd_verify)
     i = sub.add_parser("init"); i.add_argument("--force", action="store_true"); i.set_defaults(fn=cmd_init)
-    sub.add_parser("verify").set_defaults(fn=cmd_verify)
     sub.add_parser("boot").set_defaults(fn=cmd_boot)
     args = ap.parse_args()
     args.fn(args)
