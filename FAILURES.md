@@ -46,3 +46,15 @@ This log is the only legitimate input for changing METHOD.md
   classes: "no remote configured" (benign, local-first mode) vs "remote
   configured but pull failed" (dangerous, stale-truth risk).
 - Disposition: amendment-proposed → A-002 (split pull semantics).
+
+## F-003 · 2026-08-25 · bin/state writer vs parser format drift
+- Class: ambiguity (tool-level; caught by bin/boot spot-check)
+- What happened: rewritten bin/state emitted "Resume cue:" without the
+  leading dash the STATE parser requires; every regenerated STATE.md lost
+  its cue to boot/render readers (rendered as "-"). Discovered because a
+  final BOOT-line check was run instead of assuming success.
+- What the method should have prevented: nothing more needed — verify/boot
+  spot-checks caught it pre-push. Logged for the pattern: writers and
+  readers of an artifact must be changed in the same commit.
+- Disposition: noted + fixed same commit (writer emits bullet form).
+  No METHOD change required.

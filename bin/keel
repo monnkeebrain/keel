@@ -184,8 +184,7 @@ def cmd_state(args):
         f"- Ready to launch: {ready}" + (f" ({', '.join(ids_by['ready'])})" if ready else ""),
         f"- Backlog: {by.get('backlog', 0)} · Done: {by.get('done', 0)}",
         "",
-        "Resume cue:",
-        f"  {cue}",
+        f"- Resume cue: {cue}",
         "",
         f"- Last verified: {verified}",
     ]
