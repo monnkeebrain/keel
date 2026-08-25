@@ -261,7 +261,7 @@
     "title": "Repo health-check command (bin/verify)",
     "epic": "E5",
     "priority": "p1",
-    "status": "in_progress",
+    "status": "done",
     "as_a": "staff member running a local-only keel instance",
     "i_want": "one command that verifies my repo copy is sane",
     "so_that": "I can trust my instance without asking the operator",
