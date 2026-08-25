@@ -57,13 +57,9 @@ def parse_state_fields(text):
 
 
 # ---------------------------------------------------------------- gate
-def cmd_gate(args):
-    s = get_story(args.story_id)
-    issues = []  # (severity, message)
+def gate_issues(s):
+    issues = []
     note = lambda sev, msg: issues.append((sev, msg))
-
-    if s["status"] == "done":
-        print(f"NOTE  {s['id']} is already done — gate is informational.")
     for f in ("as_a", "i_want", "so_that"):
         if not str(s.get(f, "")).strip():
             note("BLOCKER", f"narrative incomplete: missing '{f}'")
@@ -90,6 +86,14 @@ def cmd_gate(args):
         if ac.lower() in seen:
             note("MAJOR", f"AC-{i} duplicates another criterion")
         seen.add(ac.lower())
+    return issues
+
+
+def cmd_gate(args):
+    s = get_story(args.story_id)
+    issues = gate_issues(s)
+    if s["status"] == "done":
+        print(f"NOTE  {s['id']} is already done — gate is informational.")
     blockers = sum(1 for sev, _ in issues if sev == "BLOCKER")
     majors = sum(1 for sev, _ in issues if sev == "MAJOR")
     verdict = "FAIL" if blockers else ("PASS WITH NOTES" if (majors or issues) else "PASS")
@@ -223,7 +227,23 @@ td,th{text-align:left;padding:6px 10px;border-bottom:1px solid #eee} th{backgrou
 details{margin:4px 0} summary{cursor:pointer;font-size:14px;padding:6px 10px;background:#fff;border:1px solid #ddd}
 ul{margin:6px 0} .cue{background:#fffbe6;border:1px solid #e6d24c;padding:10px 12px;font-size:14px}
 .small{color:#999;font-size:12px;margin-top:32px;border-top:1px solid #ddd;padding-top:8px}
+.gate{display:inline-block;font-size:11px;padding:1px 7px;border-radius:9px;border:1px solid #ccc}
+.gate.pass{background:#e6f4ea;border-color:#34a853;color:#1e7e34}
+.gate.issues{background:#fdecea;border-color:#d93025;color:#c5221f}
+label.chk{display:block;font-size:13.5px;padding:2px 0;cursor:pointer}
+.evq{background:#fafafa;border-left:3px solid #bbb;margin:6px 0;padding:4px 8px;font-size:12.5px;color:#444;white-space:pre-wrap}
+.art a{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#0a58ca;margin-right:12px}
 ul.checks{list-style:none;padding-left:2px;font-size:13.5px}"""
+
+
+def esc(t):
+    return str(t).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def newest_artifact(kind, sid):
+    d = ARCHIVE / kind
+    hits = sorted(d.glob(f"{sid}-*.md")) if d.exists() else []
+    return hits[-1] if hits else None
 
 
 def cmd_render(args):
@@ -245,8 +265,14 @@ def cmd_render(args):
         h.append("<table><tr><th>ID</th><th>Status</th><th>Story</th><th>Prio</th></tr>")
         for s in needs:
             h.append(f"<tr><td class='id'>{s['id']}</td><td><span class='badge {s['status']}'>{s['status']}</span></td>"
-                     f"<td>{s['title']}</td><td>{s.get('priority','')}</td></tr>")
+                     f"<td>{esc(s['title'])}</td><td>{s.get('priority','')}</td></tr>")
         h.append("</table>")
+        for s in needs:
+            ev = newest_artifact("evidence", s["id"])
+            if ev:
+                rel = ev.relative_to(ROOT).as_posix()
+                head3 = esc("\n".join(ev.read_text(encoding="utf-8").splitlines()[:3]))
+                h.append(f"<div class='evq'><b>{s['id']} evidence:</b> <a href='{rel}'>{rel}</a>\n{head3}</div>")
     else:
         h.append("<div class='sub'>nothing waiting on human judgment ✓</div>")
     h.append("<h2>Progress</h2><table><tr><th>backlog</th><th>ready</th><th>in progress</th><th>review</th><th>blocked</th><th>done</th></tr><tr>")
@@ -260,13 +286,28 @@ def cmd_render(args):
              "</table>" if inflight else "<div class='sub'>idle</div>")
     h.append("<h2>All stories</h2>")
     for s in stories:
-        checks = "".join(f"<li class='checks'>☐ {a}</li>" for a in s.get("ac", []))
-        dod = "".join(f"<li class='checks'>☐ {d}</li>" for d in s.get("dod", []))
-        h.append(f"<details><summary><span class='id'>{s['id']}</span> · {s['title']} "
-                 f"<span class='badge {s['status']}'>{s['status']}</span></summary>"
+        checks = "".join(
+            f"<li class='checks'><label class='chk'><input type='checkbox'> {esc(a)}</label></li>"
+            for a in s.get("ac", []))
+        dod = "".join(
+            f"<li class='checks'><label class='chk'><input type='checkbox'> {esc(d)}</label></li>"
+            for d in s.get("dod", []))
+        chip = ""
+        if s["status"] == "backlog":
+            n = len(gate_issues(s))
+            chip = ("<span class='gate pass'>gate PASS</span>" if n == 0
+                    else f"<span class='gate issues'>gate {n} issues</span>")
+        arts = []
+        for p in (newest_artifact("packs", s["id"]), newest_artifact("evidence", s["id"])):
+            if p:
+                r = p.relative_to(ROOT).as_posix()
+                arts.append(f"<a href='{r}'>{r}</a>")
+        artlinks = f"<div class='art'>{''.join(arts)}</div>" if arts else ""
+        h.append(f"<details><summary><span class='id'>{s['id']}</span> · {esc(s['title'])} "
+                 f"<span class='badge {s['status']}'>{s['status']}</span> {chip}</summary>"
                  f"<div style='padding:8px 12px;background:#fff;border:1px solid #ddd;border-top:0'>"
-                 f"<p><b>As a</b> {s.get('as_a')} <b>I want</b> {s.get('i_want')} <b>so that</b> {s.get('so_that')}.</p>"
-                 f"<b>AC</b><ul>{checks}</ul><b>DoD</b><ul>{dod}</ul></div></details>")
+                 f"<p><b>As a</b> {esc(s.get('as_a',''))} <b>I want</b> {esc(s.get('i_want',''))} <b>so that</b> {esc(s.get('so_that',''))}.</p>"
+                 f"{artlinks}<b>AC</b><ul>{checks}</ul><b>DoD</b><ul>{dod}</ul></div></details>")
     if DECISIONS.exists():
         decs = re.findall(r"^## (D-\d+) · (\S+) · (.+)$", DECISIONS.read_text(encoding="utf-8"), re.M)[:6]
         h.append("<h2>Recent decisions</h2><ul>")
