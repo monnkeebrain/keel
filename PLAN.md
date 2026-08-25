@@ -63,7 +63,8 @@ report cites evidence (commit hash). Deviations → FAILURES.md immediately.
 - Exit gate: resume test green on both harnesses × 2 models.
 
 ### P3 — Staff validation
-Prerequisite: US-15 (`bin/init` clean skeleton) accepted — staff start
+Prerequisites, in order: US-16 overview v2 first (bin/init emits the new
+overview structure), then US-15 (`bin/init` clean skeleton) — staff start
 from a blank workspace with `src/` for code, not from this repo's history.
 Hand the same pattern to staff on one real project (Codex/OpenCode).
 Their friction reports are the second failure stream — and the harder

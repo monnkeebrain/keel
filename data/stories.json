@@ -332,11 +332,12 @@
     "i_want": "the overview page to carry everything an acceptance decision needs onto one screen",
     "so_that": "human review is faster than opening files, and human+machine delivery is truly optimized",
     "ac": [
-      "Story details render AC and DoD items as interactive checkbox inputs rather than text glyphs",
-      "Stories in review status appear in the Needs-you section with a link to their newest evidence bundle and its first three lines quoted inline",
+      "Story details render AC and DoD items as interactive checkboxes so a reviewer can tick progress while reading; checkbox state is session-local and never persisted",
+      "Stories in review status appear in the Needs-you section with a relative link to their newest evidence bundle and its first three lines quoted inline",
       "Backlog stories display a gate chip computed at render time showing PASS or the number of open issues, using the same checks as bin/gate",
       "Stories with archived packs or evidence bundles under archive/ show clickable relative links to those artifact paths",
-      "Output stays a single self-contained HTML file with zero JavaScript that opens from file://"
+      "The page keeps its existing section set - header, Needs-you, Progress, In-flight, All stories, Recent decisions, Resume cue - and adds no new top-level sections",
+      "The page stays one self-contained HTML file with zero JavaScript and opens from file://"
     ],
     "dod": [
       "Gate logic is reused from the bin/gate implementation rather than duplicated",
