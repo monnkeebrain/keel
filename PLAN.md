@@ -33,7 +33,10 @@ Adapter generator: emits `adapters/AGENTS.md`, `.hermes.md`,
 - Exit gate: all commands run identically via Hermes terminal tool and
   an Open Terminal shell. Zero pip installs required.
 
-### P2 — Two-harness dogfood (the real gate)
+### P2 — Two-harness dogfood (the real gate) ✅ COMPLETE 2026-08-25
+Matrix green: OWUI+OT (ox-alpha, qwen3.8-27b) · OpenCode×grok-4.6 (bare-boot
+entry, post-F-005) · Hermes-desktop×grok-4.6 (full story loop, gate held).
+Findings: F-004/F-005/F-006; A-001+A-002 confirmed.
 Next real project lives in this repo. Alternate sessions deliberately
 between Hermes and OWUI+OT instances.
 **Cold-start resume test** (the regression suite): fresh chat, zero
