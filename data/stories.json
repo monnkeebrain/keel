@@ -321,5 +321,27 @@
       "Documented in METHOD.md section 4 toolchain line",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-16",
+    "title": "Overview v2 — human review ergonomics",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "operator reviewing delivered work and deciding acceptance",
+    "i_want": "the overview page to carry everything an acceptance decision needs onto one screen",
+    "so_that": "human review is faster than opening files, and human+machine delivery is truly optimized",
+    "ac": [
+      "Story details render AC and DoD items as interactive checkbox inputs rather than text glyphs",
+      "Stories in review status appear in the Needs-you section with a link to their newest evidence bundle and its first three lines quoted inline",
+      "Backlog stories display a gate chip computed at render time showing PASS or the number of open issues, using the same checks as bin/gate",
+      "Stories with archived packs or evidence bundles under archive/ show clickable relative links to those artifact paths",
+      "Output stays a single self-contained HTML file with zero JavaScript that opens from file://"
+    ],
+    "dod": [
+      "Gate logic is reused from the bin/gate implementation rather than duplicated",
+      "bin/render runs clean on this repo and bin/verify stays green afterwards",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
