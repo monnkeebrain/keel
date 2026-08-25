@@ -42,6 +42,21 @@ resume cue, executes one ready story within protocol, updates STATE.md +
 decisions.md — with no clarifying questions.
 Run per harness × at least two different models (both platforms are
 model-agnostic; use that). Every friction → FAILURES.md.
+
+Runbook — each arm is a fresh session with zero context, run against a
+current clone of origin (origin must contain the signed ready story):
+- **Arm A · OWUI+OT × model 1:** fresh OT workspace → `git clone
+  https://github.com/monnkeebrain/keel.git && cd keel` → new chat, no
+  system prompt → first message: content of adapters/owui-system-prompt.md
+  followed by: `boot, then take the ready story.` (tests adapter entry)
+- **Arm B · Hermes × model 2:** clone repo → `hermes` inside it (native
+  .hermes.md discovery) → first message: `boot.` No pasted rules allowed —
+  this arm tests zero-instruction entry. (requires Hermes installed)
+- **Arm C · OWUI+OT × model 2:** repeat Arm A with a different model in
+  the dropdown.
+PASS per arm: BOOT line matches `bin/boot` output · executes the ready
+story via pack within protocol · STATE.md + decisions.md updated · final
+report cites evidence (commit hash). Deviations → FAILURES.md immediately.
 - Exit gate: resume test green on both harnesses × 2 models.
 
 ### P3 — Staff validation
