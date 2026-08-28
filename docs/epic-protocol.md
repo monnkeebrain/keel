@@ -1,7 +1,7 @@
 # Epic protocol — candidate (not METHOD yet)
 
-Status: plan. Not in force. No `take E-n` until a signed story
-lands this in METHOD.md and `bin/`.
+Status: plan, operator answers folded in. Not in force. No `take E-n`
+until a signed story lands this in METHOD.md and `bin/`.
 
 This is a Tier B candidate. It does not change invariants.
 Anti-overfit: 1:1 friction is planning input, not a FAILURES amendment.
@@ -11,18 +11,14 @@ Anti-overfit: 1:1 friction is planning input, not a FAILURES amendment.
 ## 1. What hurt in 1:1 (field, this repo)
 
 - **Dispatch tax.** `accept US-aa, take US-bb` is two full P-END + P-RUN
-  cycles. The human is the scheduler. Independent stories in the same
-  slice waited on a chat turn, not on a dependency.
-- **Accept grain was right.** Per-story accept caught F-007, fixture
-  claims, and “not in the pack.” Do not merge contracts into one
-  epic-accept.
-- **Pack grain was right.** One compiled story at a time kept scope
-  honest. Concatenating seven AC lists would recreate “the whole backlog
-  in the prompt.”
-- **Isolation is still missing.** One `stories.json` and one working
-  copy. Two agents on two epics will collide before any epic protocol
-  saves them. That is a *later* epic (file split, worktrees, clerk),
-  not a blocker for 1H+1A epic chaining.
+  cycles. Independent stories in the same slice waited on a chat turn.
+- **Accept grain was right for defects.** Per-story evidence caught
+  F-007 and fixture claims. Do not merge AC lists. Batch *judgment*
+  of already-evidenced stories is a different thing (section 5).
+- **Pack grain was right.** One compiled story at a time. Do not dump
+  every AC in the epic into one prompt.
+- **Isolation is still missing** for two agents (`stories.json`, one
+  working copy). That is E8, not a blocker for 1H+1A epic chaining.
 - **`epic` is already a label.** E1–E5 exist. They do not dispatch.
 
 ---
@@ -30,12 +26,11 @@ Anti-overfit: 1:1 friction is planning input, not a FAILURES amendment.
 ## 2. Non-goals
 
 - Not an agent orchestrator, queue, or MCP.
-- Not one accept for many stories.
 - Not one pack containing every AC in the epic.
-- Not deleting 1:1. `take US-xx` stays legal forever (micro-contracts,
-  hotfixes, the ZIP path).
-- Not implementing worktrees / story-per-file / claimer / clerk in the
-  MVP. Those are isolation, sequenced after the loop works for 1H+1A.
+- Not deleting 1:1. `take US-xx` stays legal (micro-contracts, hotfixes).
+- Not implementing worktrees / story-per-file / claimer / clerk in E7.
+- Not building on unaccepted work: `depends_on` still means predecessor
+  is `done`, not `review`.
 
 ---
 
@@ -43,209 +38,206 @@ Anti-overfit: 1:1 friction is planning input, not a FAILURES amendment.
 
 | Term | Meaning |
 |---|---|
-| **Story** | The contract. AC[], DoD[], accept key, evidence. Unchanged. |
-| **Epic** | A dispatch envelope: id, goal, ordered story ids, `depends_on` other epics, `scope`. |
-| **Unlocked story** | `ready`, and every `depends_on` story is `done` (accepted). |
-| **Take epic** | Claim the epic. Then chain unlocked stories in that epic only, still one story compiled at a time, still no self-accept. |
-| **Stall** | Agent cannot start another unlocked story in its epic. Stop and report. Do not invent work in a different epic. |
+| **Story** | The contract. AC[], DoD[], evidence. Human still owns `done`. |
+| **Epic** | Dispatch envelope: id, goal, ordered story ids, `depends_on` epics, `scope`. One file: `data/epics/E-n.json`. |
+| **Unlocked** | Story is `ready`; every story `depends_on` is `done`; story is listed on this epic. |
+| **Logical to proceed** | Unlocked, and the work so far has not made the next story false or out of scope. If it has: **park**, do not invent a replacement. |
+| **Take epic** | Claim the epic. Chain every story that is unlocked and logical. Validate (evidence per story → `review`). Present the epic. Do not self-accept. |
+| **Present epic** | No further unlocked+logical story. Epic → `review`. Cover: story table, evidence paths, parked/waiting list. |
+| **Reassign** | Operator pulls a `review` (or waiting) story off this epic: back to `ready`/`backlog`, or onto another epic. |
+| **Accept epic** | Legal only when every id still listed on the epic is `done`. May be combined with batch-accept of its `review` stories. |
 
 ---
 
 ## 4. Invariants that do not move
 
-1. Repo is memory. 2. STATE is O(current). 3. No done without evidence
-mapped to AC/DoD. 4. One store, projections elsewhere. 5. IDs immutable.
-6. Adapters are generated from METHOD. 7. Complexity pays rent.
-8. Human accept. 9. `ff-only`, never merge-by-agent. 10. One writer per
-working copy (D-013).
+Repo is memory · STATE O(current) · no done without evidence mapped to
+AC/DoD · one store, projections elsewhere · IDs immutable · adapters
+from METHOD · complexity pays rent · **human accept** · `ff-only` ·
+one writer per working copy (D-013).
 
-Epic adds **no** new accept authority.
+`accept E-n` is still a **human** speech act. It does not let the agent
+close work. It lets the human close a *batch* they have judged.
 
 ---
 
 ## 5. Protocol
 
-### P-EPIC-STORY (planning, human + workshop)
+### P-EPIC-STORY (planning)
 
-An epic is designed *before* its stories are signed ready.
+Epic designed before its stories are signed ready.
 
-Required on the epic (proposed store: `data/epics.json`, one object per
-id, later maybe `data/epics/E-n.json`):
+Store: **`data/epics/E-n.json`** (one object, one file). Repo/project
+native; two agents on two epics do not edit the same epic file.
+(Story files remain `data/stories.json` until E8.)
 
-- `id` (E-n, immutable once referenced)
-- `title`, `goal` (one paragraph)
-- `stories[]` (ordered US-ids; may be empty while drafting)
-- `depends_on[]` (other epic ids; default empty)
-- `scope.touch[]` / `scope.forbid[]` (path prefixes, working-copy root)
-- `status` (backlog / ready / in_progress / review / blocked / done)
+Fields: `id`, `title`, `goal`, `stories[]`, `depends_on[]` (epic ids),
+`scope.touch[]` / `scope.forbid[]`, `status`.
 
-Stories inside the epic gain optional `depends_on[]` (story ids). Missing
-= no predecessor. Gate MINOR if an implementation story has neither
-`scope` nor `depends_on` and the epic has scope — do not BLOCKER.
+Stories gain optional `depends_on[]` (story ids).
 
-**Planning rules (this is how agents do not stall):**
+**Planning rules (stall prevention):**
 
 1. **Touch disjointness.** Two epics that are not `done` must not share
-   a `scope.touch` prefix. Shared files (`METHOD.md`, `bin/`,
-   `data/stories.json`) belong to **at most one** non-done epic.
-2. **Cross-epic `depends_on` only onto epics you will finish first.**
-   At epic-sign, every id in `depends_on` is `done` *or* the operator
-   is signing a sequence in one breath (`sign E7 then E8` with E8
-   depending on E7 — E8 stays backlog until E7 is done).
-3. **No mid-flight coupling.** If two parallel epics discover they need
-   the same file, that is a new integration story in a **third** epic,
-   not a silent cross-touch. Do not widen `touch` on an in-progress epic
-   without an operator sign.
-4. **Within-epic sequence is `depends_on`, not chat order.** If US-28
-   cannot start until US-27 is accepted, write it. If they are
-   independent, do not fake a chain — the agent will run them back to
-   back in one take.
-5. **Integration epic last.** Parallel feature epics merge through an
-   explicit integration epic whose `depends_on` is those features and
-   whose `touch` is the shared surface.
+   a `scope.touch` prefix. `METHOD.md`, `bin/`, `data/stories.json`
+   belong to at most one non-done epic.
+2. **Cross-epic `depends_on` only onto epics you finish first** (already
+   `done`, or signed later and left backlog until then).
+3. **No mid-flight coupling.** Shared need → new integration epic, not
+   a widened `touch` on an in-progress epic.
+4. **Within-epic sequence is `depends_on`.** Hard wait = predecessor
+   `done`. Independent stories are chained in one take.
+5. **Integration epic last.**
 
-If a requested story cannot be placed without violating (1)–(3), **park
-it**. Same as unverifiable work.
+If a story cannot be placed without violating 1–3: **park**.
 
 ### P-EPIC-SIGN
 
-Operator: `sign E-n`. Checks (proposed `bin/epic-gate E-n`):
+`sign E-n`. Proposed `bin/epic-gate E-n`:
 
-- Epic has goal, at least one story, scope.touch non-empty for
-  implementation epics (docs-only epics may touch `docs/` only).
-- No touch overlap with any epic whose status is not `done`.
+- Goal, ≥1 story, scope.touch set for implementation epics.
+- No touch overlap with any epic not `done`.
 - Every `depends_on` epic is `done`.
-- Every listed story exists; every story’s `epic` field equals this id.
-- Story-level `depends_on` ids exist and live in this epic or a `done`
-  epic.
+- Listed stories exist; each story’s `epic` field is this id.
+- Story `depends_on` ids exist (this epic or a `done` epic).
 
-Then status `ready`. Same human key as `sign US-xx`.
+Stories on the epic should already be `ready` (signed) *or* the take
+will simply skip `backlog` ones (park / wait). Prefer sign stories
+before or with the epic so `take E-n` can finish the slice.
+
+Then epic `ready`.
 
 ### P-EPIC-RUN — `take E-n`
 
-1. `git pull --ff-only`. BOOT line (later: include in-flight epic id).
-2. Claim epic → `in_progress`. One in_progress epic per working copy.
-3. Cover sheet (not a dump): epic goal, story table (id, status,
-   unlocked yes/no), epic scope, laws, recent decisions. Then
-   `bin/pack` **the first unlocked story** (`--save`).
-4. Execute that story inside its pack. Evidence. Status `review`.
-   Commit `review US-xx`. Push.
-5. **Chain (the 1:1 tax cut):** if another story in *this* epic is
-   unlocked, pack it and go to 4 **without a new human take**.
-6. **Stall:** no unlocked story left. Report epic id, review list,
-   blocked/waiting list. Stop. Do not start another epic. Do not
-   self-accept.
-7. Session P-END: STATE names the epic and the waiting ids.
+1. `git pull --ff-only`. BOOT line includes **active epic id(s)**.
+2. Claim epic → `in_progress`. WIP: **max 1** in-flight epic per
+   working copy until E8; then **max 3** (human review budget).
+3. Cover sheet: goal, story table (status, unlocked, logical?), scope,
+   laws, recent decisions. Pack **one** unlocked story (`--save`).
+4. Execute. Evidence. Story → `review`. Commit `review US-xx`. Push.
+5. **Chain:** if another story in this epic is unlocked **and logical
+   to proceed**, pack it and go to 4. No new human `take`.
+6. **Park:** unlocked on paper but not logical (scope broken, story
+   now false, would piggyback). Status `blocked` or leave `ready` with
+   a parked note in the cover. Do not invent a replacement story.
+7. **Present:** no remaining unlocked+logical story. Epic → `review`.
+   Report: evidence index (every `review` story + path), parked list,
+   waiting-on-`done`-predecessor list, leftover `backlog`. Stop.
+   Do not mark stories or epic `done`.
+8. P-END: STATE names active epic(s) and the present/waiting ids.
 
-Still forbidden: marking `done`; editing outside epic + story scope;
-piggyback fixes (D-014).
+`take US-xx` remains: that story only, no chain, no epic present.
 
-`take US-xx` remains: claim that story only, no chain.
+Hard `depends_on`: US-28 waiting on US-27 stays locked until US-27 is
+**accepted** (`done`). The agent presents the epic with US-27 in
+`review` and US-28 waiting. Human accepts US-27 (or the batch); a
+later `take E-n` continues. That is not a planning stall; it is the
+accept key.
 
-### Accept
+### Accept (stories and epic)
 
-Unchanged and **per story**. Overview Needs-you already stacks.
-Epic becomes `done` when every listed story is `done` (mechanical,
-`bin/state` / a later `bin/epic-close` check). Reject returns the
-story to `ready` or `blocked`; dependents stay locked.
+The agent presents a completed *attempt* (all it could legally run).
+The operator judges.
+
+**`accept E-n`** (happy path)
+
+- Every listed story is `review` or already `done`; none waiting on
+  a predecessor inside the epic; none still `in_progress`.
+- Effect: all `review` stories on that epic → `done`; epic → `done`.
+- One speech act, one commit (or one per story plus epic — mechanical
+  detail for E7). Evidence already filed per story.
+
+**Partial**
+
+- `accept US-aa US-bb` — those `review` stories → `done`. Epic stays
+  `review` or `in_progress`.
+- `reassign US-cc` — off this epic’s `stories[]`. Operator names
+  destination: `ready` on this epic (another take), `backlog`, or
+  another epic id. Evidence stays in `archive/` (IDs immutable).
+- Epic **`accept E-n` is illegal** until every id **still listed**
+  on the epic is `done`.
+
+**Reject** a story: back to `ready` or `blocked`; dependents stay
+locked. Epic not accepted.
+
+Overview: Needs-you lists `review` stories **and** epics in `review`
+(accept-all vs partial). Checkboxes stay session-local. Image evidence
+unchanged.
 
 ---
 
 ## 6. Multi-agent (each agent one epic)
 
-MVP is 1 human × 1 agent × 1 epic chain. Multi-agent is the same
-protocol plus isolation already named in METHOD (D-013):
-
 | Layer | Rule |
 |---|---|
-| Dispatch | One agent `take E-a`, another `take E-b`. Never two epics in one working copy. |
-| Isolation | Separate git worktrees (or clones). `ff-only` pull/push. |
-| Planning | Touch disjointness (section 5) is what prevents stall, not a runtime lock server. |
-| Contract store | Today one `stories.json` — two worktrees claiming different stories still collide on push. **Do not start two-agent dogfood until story-per-file (or equivalent) exists.** |
-| Clerk | Status flips through `bin/` (`claim`, later `review`). Hand-edits of the store from execute agents stay a later clerk story. |
-| Human | One accept queue. WIP law: default max two in-flight epics because one human cannot review eight. |
-
-If agent B would need a file agent A has in `touch` and A is not done:
-**B’s epic was mis-planned.** Park B. Do not wait at runtime.
+| Dispatch | Agent A `take E-a`, agent B `take E-b`. Never two epics in one working copy. |
+| Isolation | Worktrees/clones + `ff-only`. E8. |
+| Planning | Touch disjointness. Mis-planned overlap → park the second epic, do not wait. |
+| Epic files | `data/epics/E-n.json` — two epic-claims do not share a file. |
+| Story files | Still one `stories.json` until E8. **No two-agent dogfood until story-per-file.** |
+| WIP | 1 in-flight epic until E8, then max **3**. |
+| Present | Each agent presents *its* epic. Human may `accept E-a` and partial `E-b` in one sitting. |
 
 ---
 
-## 7. STATE / overview (projections)
+## 7. STATE / boot / overview
 
-- STATE: in-flight epic id(s), unlocked counts, waiting-on-accept ids.
-  Still O(current). Resume cue can stay one sentence; the list is the
-  machine truth.
-- Overview: group stories by epic; Needs-you stays flat (human queue).
-  No new JS framework.
-
----
-
-## 8. What we abandoned (and why it comes back)
-
-US-27..30 (worktree flag, claimer ids, story-per-file, clerk-only) were
-unsigned isolation stories. Operator dropped them so this plan could
-go first. IDs stay (`abandoned`). They return as **E8 isolation**,
-after E7 (protocol MVP) has been dogfooded 1H+1A.
-
-Do not resurrect them inside E7. E7 must be shippable on today’s
-single `stories.json`.
+- BOOT: `BOOT ok · keel v… · <phase> · <n ready> · epics <ids or none> · <cue>`
+  Active = epic status `in_progress` or `review`.
+- STATE: those ids, unlocked counts, waiting-on-accept story ids.
+  O(current).
+- Overview: group by epic; Needs-you includes epic review rows.
 
 ---
 
-## 9. Dogfood on this repo
+## 8. Abandoned US-27..30
 
-**E7 — Epic protocol MVP** (serial, this working copy)
-
-Proposed stories (draft only after this plan is accepted):
-
-1. METHOD §3 P-EPIC-* text (no bin). Laws stay short.
-2. `data/epics.json` + `bin/epic-gate` / `bin/epic-claim` / cover sheet
-   + chain rule in pack/adapter. `take E-n` documented.
-3. Optional story `depends_on[]`; claim/pack refuse if predecessor
-   not `done`. AMENDMENTS.
-4. Overview groups by epic; STATE lists in-flight epic.
-5. Cold-start arm: `take E7` chains two independent tiny stories,
-   stalls on a third that `depends_on` the first, human accepts,
-   `take E7` continues. Resume suite item.
-
-**First use of the loop:** one real slice (e.g. workshop US-18 inside
-an E-workshop *after* E7 is done), not mixed into E7.
-
-**E8 — Isolation for 1H+NA** (only after E7 cold-start is green)
-
-Story-per-file → claim `--worktree` → claimer ids → clerk/`bin/review`.
-In that order: files first (git can merge/ff distinct paths), then
-worktrees, then identity, then write-set.
-
-**E9 — Official skill** (adapter, after E7 is in METHOD)
-
-Thin, model-agnostic, in repo `skills/`. Describes 1:1 *and* `take E-n`.
-Not a copy of the Hermes skill.
+Isolation stories stay `abandoned`. Return as **E8** after E7 dogfood.
+E7 ships on today’s `stories.json` plus **new** `data/epics/E-n.json`.
 
 ---
 
-## 10. Open questions (operator)
+## 9. Dogfood
 
-Answer these before drafting E7 stories. Defaults in parentheses.
+**E7 — Epic protocol MVP** (1H+1A, this working copy)
 
-1. Epic store: one `data/epics.json` vs `data/epics/E-n.json`?
-   (Recommend one JSON file until story-per-file exists — same collision
-   budget as today, 1H+1A only.)
-2. Chain after `review` without waiting for accept when `depends_on`
-   is empty — confirm? (Recommend yes. That *is* the tax cut.)
-3. WIP: max in-flight epics = 1 until E8, then 2? (Recommend yes.)
-4. May `take E-n` run if some listed stories are still `backlog`?
-   (Recommend yes: chain whatever is unlocked; stall when nothing is.)
-5. Boot line: add epic id when in_progress, or keep STATE-only?
-   (Recommend STATE + cover sheet first; boot line later if we miss it.)
+Draft only after operator accepts this plan:
+
+1. METHOD §3 P-EPIC-* (including present + `accept E-n` / reassign).
+2. `data/epics/E-n.json` + `bin/epic-gate` / `bin/epic-claim` /
+   cover sheet + chain + present. Boot line lists active epics.
+3. Story `depends_on[]`; pack/claim refuse unless predecessor `done`.
+4. `accept E-n` batch-closes review stories + epic when legal;
+   partial accept + `reassign`; overview epic row.
+5. Cold-start: `take E7` chains two independent stories, parks or
+   waits on a third with `depends_on`, presents epic. Human
+   `accept E7` *or* partial + reassign. Resume suite item.
+
+**E8 — Isolation** (after E7 green): story-per-file → worktree →
+claimer → clerk. WIP cap becomes 3.
+
+**E9 — Official skill** after E7 is in METHOD.
+
+**US-18** first *use* of the loop, not inside E7.
+
+---
+
+## 10. Closed questions
+
+| # | Decision |
+|---|---|
+| 1 | One file per epic: `data/epics/E-n.json`. |
+| 2 | Chain after `review` when `depends_on` is empty. Yes. |
+| 3 | Max in-flight epics = 1 until E8, then **3**. |
+| 4 | Unlocked **and logical** → proceed; else **park**. |
+| 5 | BOOT line includes active epic ids. |
 
 ---
 
 ## 11. Complexity rent
 
-Epic pays rent if and only if: one `take E-n` can land ≥2 independent
-stories in one session without a human turn between them, and a
-mis-planned cross-touch is rejected at **sign**, not at Friday 4pm.
+Epic pays rent if: one `take E-n` can evidence ≥2 independent stories
+without a human turn between them, the human can `accept E-n` once,
+and a bad cross-touch dies at **sign**.
 
-If we cannot state that in METHOD in less than a page, the protocol is
-too fat. Cut before coding.
+If METHOD needs more than a page for P-EPIC-*, cut before coding.

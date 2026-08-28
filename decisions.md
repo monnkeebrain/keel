@@ -3,6 +3,16 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-017 · 2026-08-28 · Epic protocol answers: per-file epics, present, accept E-n
+Rationale: Operator closed the five plan questions and the accept
+model: take epic → finish/validate unlocked stories → present;
+human accepts all (stories+epic) or some + reassign; epic accept
+only when every listed story is done.
+Consequences: candidate `docs/epic-protocol.md` uses `data/epics/E-n.json`,
+chain-after-review, BOOT lists active epics, WIP 1 then 3 at E8, park
+when not logical. Not METHOD yet.
+Refs: docs/epic-protocol.md; D-016.
+
 ## D-016 · 2026-08-28 · US-27..30 abandoned; epic protocol planned first
 Rationale: isolation stories (worktree, claimer, story-per-file, clerk)
 were unsigned. Operator dropped them so the epic loop could be designed

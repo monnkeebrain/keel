@@ -89,9 +89,10 @@ MCP reconsidered only after months of file+CLI stability and a proven
 repetitive operation.
 
 ### P6 — Epic protocol (candidate)
-Dispatch unit larger than one story, still one accept key per story.
+Dispatch unit larger than one story. Agent presents the epic; human
+`accept E-n` (all remaining review stories + epic) or partial + reassign.
 Plan: `docs/epic-protocol.md`. Not in METHOD until a signed story.
-MVP is 1H+1A chaining inside one epic. Multi-agent isolation is E8.
+MVP is 1H+1A chaining. Store: `data/epics/E-n.json`. WIP: 1, then 3 at E8.
 - Exit gate: plan accepted by operator; then E7 stories drafted and signed.
 
 ## Standing metrics (only four)
