@@ -49,3 +49,4 @@ log it as `noted` instead. Methods are fitted to patterns, not incidents.
 | A-003 | 2026-08-25 | B | P-END gains mandatory `bin/verify` before push | F-005 | CONFIRMED 2026-08-25 — every push since F-003 preceded by verify green; duplicate-subparser crash caught by battery pre-push (US-15/17 runs) |
 | A-004 | 2026-08-28 | B | P-RUN gains `bin/claim` before pack; multiple in_progress IDs allowed | simplification (in_progress was displayed but never written) | TRIAL |
 | A-005 | 2026-08-28 | B | Schema v0 optional `scope.touch` / `scope.forbid` path-prefix arrays; prefixes relative to working-copy root | US-22 | TRIAL |
+| A-006 | 2026-08-28 | B | P-EPIC-STORY/SIGN/RUN/PRESENT/ACCEPT: take E-n chains unlocked stories; park/reassign operator-only; accept E-n only when listed stories are done | US-31 | TRIAL |

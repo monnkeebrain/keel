@@ -86,6 +86,7 @@ Every session starts here — including "quick questions". No exceptions.
    disagree, the repo wins.
 5. Route the task:
    - Story ID given → load that story + its referenced law slices only.
+   - Epic ID given → P-EPIC-RUN (this epic only).
    - No task given → reply with phase, open intents, resume cue,
      ready count. Then wait. Do not invent work.
 6. Emit the BOOT line so the operator can verify you read state:
@@ -131,6 +132,44 @@ in_progress, review, or blocked. Status done is forbidden. Do not write
 ### P-DISTILL Compaction ritual
 At phase end or when archive grows: run distill, move raw log to
 `archive/`, keep decisions.md tight. STATE.md regenerated after.
+
+### P-EPIC-STORY Epic contract
+An epic is a dispatch envelope (id E-n, goal, ordered story ids,
+depends_on other epics, scope). Designed before its stories are signed
+ready. Store and `bin/` land in later stories; the rules here bind anyway.
+
+Touch prefixes of two non-done epics must not overlap. `depends_on`
+epics must be `done` before this epic is signed. Within-epic sequence
+is story `depends_on` (predecessor must be `done`, not `review`).
+
+### P-EPIC-SIGN
+Operator: `sign E-n` (commit). Epic → `ready`. Same human key as
+`sign US-xx`.
+
+### P-EPIC-RUN
+Operator: `take E-n`. Agent claims the epic, then chains every
+**unlocked** story in that epic (ready, listed, every story
+`depends_on` is `done`) that is logical to proceed: one story packed
+and evidenced to `review` at a time, no new human take between them.
+If the next story is not logical: stop and present — do not invent a
+replacement. Do not start another epic. One in-progress epic per
+working copy.
+
+`take US-xx` remains legal and does not chain.
+
+The agent must not park, reassign, or mark done.
+
+### P-EPIC-PRESENT
+When no unlocked+logical story remains: present the epic (epic →
+`review`). Evidence index per story, waiting list, recommended parks.
+Stop.
+
+### P-EPIC-ACCEPT
+`park US-xx` and `reassign US-xx` are operator-only.
+`accept E-n` is legal only when every story still listed on the epic
+is `done`. It may batch-accept remaining `review` stories on that
+epic. Partial: accept some stories; park or reassign the rest; epic
+stays open until the listed set is all `done`.
 
 ## 4. Toolchain
 
