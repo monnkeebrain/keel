@@ -12,8 +12,10 @@ Any agent harness — Hermes, Open WebUI + Open Terminal, Codex, OpenCode —
 plugs in through thin entry files. Nothing important lives in a harness;
 harnesses churn, files persist.
 
-**Status:** method core proven. Resume matrix green across Open WebUI+OT,
-OpenCode and Hermes desktop × ox-alpha / grok-4.6-high / qwen3.8-27b.
+**Status:** method core proven. Resume matrix green across Open WebUI + Open Terminal,
+Hermes, OpenCode, Codex, Claude Code, Amp Code, Grok Build, Factory Droid
+× Grok 4.6, Claude Opus, Claude Fable, GPT-5.5, GPT-5.6, Qwen3.8-27B, Kimi 3,
+Ox Alpha / GLM 5.3 Flash, Qwen 3.8. Provenance: `docs/testing-matrix.md` only.
 Acceptance gate held under every model tested (agents halt and wait for
 human "accept" — verified, not assumed). Currently entering P3: first
 staff pilot on a real client project.

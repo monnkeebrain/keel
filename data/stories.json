@@ -515,7 +515,7 @@
     "title": "Matrix and README list every tested harness and model",
     "epic": "E5",
     "priority": "p0",
-    "status": "ready",
+    "status": "review",
     "as_a": "operator reading README or the testing matrix",
     "i_want": "docs/testing-matrix.md and README to name every harness and model that was tested, including those on the website",
     "so_that": "in-repo provenance matches the tests that happened, not a stale subset",

@@ -1,8 +1,9 @@
 # Testing Matrix — how we know keel works
 
 Claim: keel's bootstrap, work loop, and acceptance gates function across
-harnesses and model families. This page is the provenance for that claim,
-reproduced from PLAN.md's P2 runbook.
+harnesses and model families. This page is the only in-repo source for
+harness and model pass claims, reproduced from PLAN.md's P2 runbook plus
+operator-attested field tests.
 
 | # | Harness | Model | Entry mode | Scope | Result |
 |---|---------|-------|-----------|-------|--------|
@@ -12,6 +13,38 @@ reproduced from PLAN.md's P2 runbook.
 | 4 | OpenCode | grok-4.6-high | bare `boot`, fresh clone | cold start post-fix | PASS — verbatim BOOT line |
 | 5 | Open WebUI + OT | ox-alpha | adapter paste | cold start, with remote | PASS |
 | 6 | Open WebUI + OT | qwen3.8-27b | adapter paste | cold start | PASS — self-recovered from pager hang |
+
+## Operator-attested field tests
+
+Names required for in-repo provenance that are not a numbered P2 arm
+get Result only. No invented Entry mode or Scope cells.
+
+### Harnesses
+
+| Harness | Result | Provenance |
+|---------|--------|------------|
+| Open WebUI + Open Terminal | PASS | P2 arms 1, 2, 5, 6 |
+| Hermes | PASS | P2 arm 3 (Hermes desktop) |
+| OpenCode | PASS | P2 arms 4, 7 |
+| Codex | PASS | operator-attested |
+| Claude Code | PASS | operator-attested |
+| Amp Code | PASS | operator-attested |
+| Grok Build | PASS | operator-attested |
+| Factory Droid | PASS | operator-attested |
+
+### Models
+
+| Model | Result | Provenance |
+|-------|--------|------------|
+| Grok 4.6 | PASS | P2 arms 3, 4 (grok-4.6-high) |
+| Claude Opus | PASS | operator-attested |
+| Claude Fable | PASS | operator-attested |
+| GPT-5.5 | PASS | operator-attested |
+| GPT-5.6 | PASS | operator-attested |
+| Qwen3.8-27B | PASS | P2 arm 6 (qwen3.8-27b) |
+| Kimi 3 | PASS | operator-attested |
+| Ox Alpha / GLM 5.3 Flash | PASS | P2 arms 1, 2, 5 (ox-alpha) |
+| Qwen 3.8 | PASS | operator-attested |
 
 ## Gates that held under every arm
 
