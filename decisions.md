@@ -3,6 +3,17 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-021 · 2026-08-28 · epic-pack, epic-present, boot lists active epics
+Rationale: take E-n needs a cover sheet and a present command, and a
+cold BOOT must name in-flight epics. Pack still listed blocked as an
+agent-writable status, which contradicted operator-only park.
+Consequences: `bin/epic-pack` prints the epic cover then the first
+unlocked story pack. `bin/epic-present` sets the epic to review.
+`bin/boot` emits `epics <ids or none>`. STATE has Active epics.
+Pack write-set: blocked is operator-only. After review, pack the next
+unlocked story in this epic without a new take.
+Refs: US-33; archive/evidence/US-33-run01.md.
+
 ## D-020 · 2026-08-28 · data/epics/*.json + epic-gate + epic-claim
 Rationale: one JSON array cannot isolate two epic claims. Gate must
 reject missing stories, epic-field mismatch, undone depends_on epics,
