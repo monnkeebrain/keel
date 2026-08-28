@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 STORIES = ROOT / "data" / "stories.json"
+EPICS_DIR = ROOT / "data" / "epics"
 STATE = ROOT / "STATE.md"
 DECISIONS = ROOT / "decisions.md"
 LAWS_DIR = ROOT / "laws"
@@ -36,6 +37,45 @@ def load_stories():
 
 def save_stories(arr):
     STORIES.write_text(json.dumps(arr, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def list_epic_paths():
+    if not EPICS_DIR.exists():
+        return []
+    return sorted(EPICS_DIR.glob("*.json"))
+
+
+def load_epic(eid):
+    path = EPICS_DIR / f"{eid}.json"
+    if not path.exists():
+        sys.exit(f"keel: epic '{eid}' not found in {EPICS_DIR.relative_to(ROOT)}")
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8"))
+    except Exception as e:
+        sys.exit(f"keel: epic '{eid}' unparseable: {e}")
+    if not isinstance(obj, dict):
+        sys.exit(f"keel: epic '{eid}' is not a JSON object")
+    return obj, path
+
+
+def save_epic(obj):
+    EPICS_DIR.mkdir(parents=True, exist_ok=True)
+    path = EPICS_DIR / f"{obj['id']}.json"
+    path.write_text(json.dumps(obj, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    return path
+
+
+def wipe_epic_files():
+    EPICS_DIR.mkdir(parents=True, exist_ok=True)
+    for p in list_epic_paths():
+        p.unlink()
+
+
+def prefix_overlap(a, b):
+    a, b = str(a).rstrip("/"), str(b).rstrip("/")
+    if not a or not b:
+        return False
+    return a == b or a.startswith(b + "/") or b.startswith(a + "/")
 
 
 def get_story(sid):
@@ -140,6 +180,99 @@ def cmd_claim(args):
     print(f"CLAIM {target['id']}")
     print(f"root {root}")
     print(f"HEAD {head}")
+
+
+# ---------------------------------------------------------------- epic-gate / epic-claim
+EPIC_REQUIRED = ("id", "title", "goal", "stories", "depends_on", "scope", "status")
+
+
+def cmd_epic_gate(args):
+    eid = args.epic_id
+    obj, _path = load_epic(eid)
+    issues = []
+    note = lambda sev, msg: issues.append((sev, msg))
+    for k in EPIC_REQUIRED:
+        if k not in obj:
+            note("BLOCKER", f"missing key '{k}'")
+    if obj.get("id") != eid:
+        note("BLOCKER", f"id '{obj.get('id')}' does not match filename {eid}")
+    stories = obj.get("stories")
+    if not isinstance(stories, list):
+        note("BLOCKER", "stories must be an array")
+        stories = []
+    deps = obj.get("depends_on")
+    if deps is not None and not isinstance(deps, list):
+        note("BLOCKER", "depends_on must be an array")
+        deps = []
+    deps = deps or []
+    scope = obj.get("scope") if isinstance(obj.get("scope"), dict) else {}
+    touch = list(scope.get("touch") or [])
+    store = {s.get("id"): s for s in load_stories() if isinstance(s, dict)}
+    for sid in stories:
+        st = store.get(sid)
+        if st is None:
+            note("BLOCKER", f"stories[] names missing id {sid}")
+        elif st.get("epic") != eid:
+            note("BLOCKER", f"{sid} story.epic is '{st.get('epic')}', expected {eid}")
+    for did in deps:
+        dpath = EPICS_DIR / f"{did}.json"
+        if not dpath.exists():
+            note("BLOCKER", f"depends_on epic {did} is missing")
+            continue
+        try:
+            dobj = json.loads(dpath.read_text(encoding="utf-8"))
+        except Exception:
+            note("BLOCKER", f"depends_on epic {did} unparseable")
+            continue
+        if dobj.get("status") != "done":
+            note("BLOCKER", f"depends_on epic {did} is not done")
+    if obj.get("status") != "done":
+        for p in list_epic_paths():
+            other_id = p.stem
+            if other_id == eid:
+                continue
+            try:
+                other = json.loads(p.read_text(encoding="utf-8"))
+            except Exception:
+                continue
+            if other.get("status") == "done":
+                continue
+            otouch = []
+            if isinstance(other.get("scope"), dict):
+                otouch = list(other["scope"].get("touch") or [])
+            for a in touch:
+                for b in otouch:
+                    if prefix_overlap(a, b):
+                        note("BLOCKER", f"scope.touch '{a}' overlaps {other_id} '{b}'")
+    blockers = sum(1 for sev, _ in issues if sev == "BLOCKER")
+    print(f"EPIC-GATE {eid} · {str(obj.get('title', ''))[:60]}")
+    for sev, msg in issues:
+        print(f"{sev:<7} {msg}")
+    print("FAIL" if blockers else "PASS")
+    sys.exit(1 if blockers else 0)
+
+
+def cmd_epic_claim(args):
+    eid = args.epic_id
+    obj, path = load_epic(eid)
+    if obj.get("status") != "ready":
+        print(f"claim refused · {eid} status is {obj.get('status')} (need ready)",
+              file=sys.stderr)
+        sys.exit(1)
+    for p in list_epic_paths():
+        if p.stem == eid:
+            continue
+        try:
+            other = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if other.get("status") == "in_progress":
+            print(f"claim refused · {other.get('id', p.stem)} is in_progress (WIP 1)",
+                  file=sys.stderr)
+            sys.exit(1)
+    obj["status"] = "in_progress"
+    save_epic(obj)
+    print(f"CLAIM {eid}")
 
 
 # ---------------------------------------------------------------- pack
@@ -476,6 +609,24 @@ def cmd_verify(args):
     dupes = sorted({i for i in ids if ids.count(i) > 1})
     line("PASS" if not dupes else "FAIL", "story IDs unique" + (f" — duplicates: {dupes}" if dupes else ""))
 
+    epic_ids = []
+    for p in list_epic_paths():
+        try:
+            o = json.loads(p.read_text(encoding="utf-8"))
+        except Exception as e:
+            line("FAIL", f"epic {p.name} unparseable: {e}")
+            continue
+        eid = o.get("id") if isinstance(o, dict) else None
+        if not eid:
+            line("FAIL", f"epic {p.name} missing id")
+            continue
+        epic_ids.append(eid)
+    edup = sorted({i for i in epic_ids if epic_ids.count(i) > 1})
+    if list_epic_paths() or epic_ids:
+        line("PASS" if not edup else "FAIL", "epic IDs unique" + (f" — duplicates: {edup}" if edup else ""))
+    elif EPICS_DIR.exists():
+        line("PASS", "epic IDs unique")
+
     bad = []
     if DECISIONS.exists():
         for n, l in enumerate(DECISIONS.read_text(encoding="utf-8").splitlines(), 1):
@@ -586,6 +737,7 @@ def cmd_init(args):
     if not args.force and not stories:
         sys.exit("init: this workspace already looks initialized (stories.json is empty). Use --force to re-init.")
     STORIES.write_text("[]\n", encoding="utf-8")
+    wipe_epic_files()
     DECISIONS.write_text(
         "# DECISIONS\n\nNewest first. Format: `## D-nn \u00b7 YYYY-MM-DD \u00b7 title` followed by\n"
         "Rationale / Consequences / Refs. Corrections via supersede, never edits.\n",
@@ -656,6 +808,8 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     g = sub.add_parser("gate"); g.add_argument("story_id"); g.set_defaults(fn=cmd_gate)
     c = sub.add_parser("claim"); c.add_argument("story_id"); c.set_defaults(fn=cmd_claim)
+    eg = sub.add_parser("epic-gate"); eg.add_argument("epic_id"); eg.set_defaults(fn=cmd_epic_gate)
+    ec = sub.add_parser("epic-claim"); ec.add_argument("epic_id"); ec.set_defaults(fn=cmd_epic_claim)
     p = sub.add_parser("pack"); p.add_argument("story_id"); p.add_argument("--save", action="store_true"); p.set_defaults(fn=cmd_pack)
     s = sub.add_parser("state"); s.add_argument("--phase"); s.add_argument("--cue"); s.add_argument("--verified"); s.set_defaults(fn=cmd_state)
     sub.add_parser("distill").set_defaults(fn=cmd_distill)

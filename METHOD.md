@@ -41,6 +41,7 @@ push/pull — pick whichever your team already has.
 |---|---|---|
 | `laws/*.md` | standing constraints: stack, design, domain rules | versioned, append new versions |
 | `data/stories.json` | contracts: narrative, AC[], DoD[], status | append/edit pre-ready; locked at launch |
+| `data/epics/*.json` | epic envelopes: goal, stories[], depends_on, scope, status | one file per epic id |
 | `decisions.md` | residue: rationale + consequences, newest first | append-only; corrections via supersede |
 | `STATE.md` | live snapshot: phase, open intents, next step | regenerated freely |
 | `archive/log-*.md` | raw history | write-once |
