@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-009 · 2026-08-28 · Pack names the default write-set
+Rationale: "do not edit files outside your scope" was a sentence with no
+paths. Agents treated METHOD.md and bin/ as fair game.
+Consequences: every pack lists Write-set (src/, archive/evidence/,
+archive/packs/, relative to this working-copy root) and Do-not-write
+(METHOD.md, bin/). Status may move to in_progress/review/blocked; done
+stays forbidden. METHOD P-RUN carries the same list.
+Refs: US-21; archive/evidence/US-21-run01.md.
+
 ## D-008 · 2026-08-28 · bin/claim writes in_progress
 Rationale: in_progress was shown on STATE and overview but nothing in
 bin/ wrote it. Flight was a ghost.
