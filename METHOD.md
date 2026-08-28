@@ -48,7 +48,9 @@ push/pull — pick whichever your team already has.
 
 Story schema v0 = the validated 12-story corpus in `data/stories.json`
 (id, epic, priority, title, as_a, i_want, so_that, ac[], dod[], status;
-optional `scope.touch[]` / `scope.forbid[]`). Scope prefixes are relative
+optional `scope.touch[]` / `scope.forbid[]`; optional `depends_on[]` of
+story ids). A predecessor in `depends_on` must be `done` before claim
+or pack. Scope prefixes are relative
 to the working-copy root. Do not extend fields without an AMENDMENTS entry.
 
 Concurrent writes to `data/stories.json` inside one working copy are

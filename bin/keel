@@ -85,6 +85,28 @@ def get_story(sid):
     sys.exit(f"keel: story '{sid}' not found in {STORIES.name}")
 
 
+def story_map():
+    return {s.get("id"): s for s in load_stories() if isinstance(s, dict) and s.get("id")}
+
+
+def unmet_depends_on(s, store=None):
+    """Reasons this story's depends_on predecessors are not all status done."""
+    store = store if store is not None else story_map()
+    deps = s.get("depends_on")
+    if deps is None:
+        return []
+    if not isinstance(deps, list):
+        return ["depends_on is not an array of story ids"]
+    reasons = []
+    for did in deps:
+        pred = store.get(did)
+        if not pred:
+            reasons.append(f"depends_on {did} is missing (need done)")
+        elif pred.get("status") != "done":
+            reasons.append(f"depends_on {did} is {pred.get('status')} (need done)")
+    return reasons
+
+
 def parse_state_fields(text):
     """Extract Phase / Resume cue / Last verified from existing STATE.md."""
     fields, current = {}, None
@@ -138,6 +160,15 @@ def gate_issues(s):
     if s.get("status") in ("backlog", "ready"):
         if not isinstance(scope, dict) or (not touch and not forbid):
             note("MINOR", "scope unset — add touch/forbid path prefixes when the story edits files")
+    deps = s.get("depends_on")
+    if deps is not None:
+        if not isinstance(deps, list):
+            note("BLOCKER", "depends_on must be an array of story ids")
+        else:
+            ids = {x.get("id") for x in load_stories() if isinstance(x, dict)}
+            for did in deps:
+                if did not in ids:
+                    note("BLOCKER", f"depends_on names an id not in the store: {did}")
     return issues
 
 
@@ -169,6 +200,9 @@ def cmd_claim(args):
     if target["status"] != "ready":
         print(f"claim refused · {target['id']} status is {target['status']} (need ready)",
               file=sys.stderr)
+        sys.exit(1)
+    for reason in unmet_depends_on(target):
+        print(f"claim refused · {target['id']} {reason}", file=sys.stderr)
         sys.exit(1)
     keys_before = set(target.keys())
     target["status"] = "in_progress"
@@ -348,7 +382,11 @@ def build_story_pack(s):
 
 
 def cmd_pack(args):
-    text = build_story_pack(get_story(args.story_id))
+    s = get_story(args.story_id)
+    for reason in unmet_depends_on(s):
+        print(f"pack refused · {s['id']} {reason}", file=sys.stderr)
+        sys.exit(1)
+    text = build_story_pack(s)
     if args.save:
         ARCHIVE.mkdir(exist_ok=True)
         pdir = ARCHIVE / "packs"; pdir.mkdir(exist_ok=True)
