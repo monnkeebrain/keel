@@ -3,6 +3,14 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-025 · 2026-08-28 · E7 complete; E8 isolation planned next
+Rationale: US-31..36 accepted. Dispatch works for 1H×1A×1 working
+copy. Two agents still cannot both land claims on stories.json.
+Consequences: candidate `docs/e8-isolation.md`. Abandoned US-27..30
+stay abandoned; E8 gets new ids. VERSION 0.1.2 is a signed story
+(US-37), not residue. Not METHOD until E8 stories are signed and taken.
+Refs: docs/e8-isolation.md; D-016; US-36.
+
 ## D-024 · 2026-08-28 · overview groups stories by epic
 Rationale: a flat story list is unusable once work is dispatched as
 epics. The operator judges a presented epic as a cluster.

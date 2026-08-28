@@ -95,6 +95,12 @@ Plan: `docs/epic-protocol.md`. Not in METHOD until a signed story.
 MVP is 1H+1A chaining. Store: `data/epics/E-n.json`. WIP: 1, then 3 at E8.
 - Exit gate: plan accepted by operator; then E7 stories drafted and signed.
 
+### P7 — Isolation / 1H+N (candidate)
+Parallel agents: one epic per working copy, story-per-file, then
+worktree, clerk, WIP 3. Plan: `docs/e8-isolation.md`. Not METHOD
+until signed E8 stories. Abandoned US-27..30 stay abandoned.
+- Exit gate: plan accepted by operator; then E8 stories drafted and signed.
+
 ## Standing metrics (only four)
 
 1. Resume-test pass rate per harness × model

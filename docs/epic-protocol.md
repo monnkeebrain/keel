@@ -1,7 +1,8 @@
-# Epic protocol — candidate (not METHOD yet)
+# Epic protocol — E7 narrative
 
-Status: plan, operator answers folded in. Not in force. No `take E-n`
-until a signed story lands this in METHOD.md and `bin/`.
+Status: E7 (US-31..36) accepted and in METHOD §3 + `bin/`. This page
+is narrative. Isolation for 1H+N is `docs/e8-isolation.md` (candidate,
+not in force).
 
 This is a Tier B candidate. It does not change invariants.
 Anti-overfit: 1:1 friction is planning input, not a FAILURES amendment.

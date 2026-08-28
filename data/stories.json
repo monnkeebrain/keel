@@ -900,5 +900,38 @@
       "Stdlib Python only",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-37",
+    "title": "v0.1.2 — E7 changelog and README current",
+    "epic": "E7",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "operator publishing the method",
+    "i_want": "VERSION 0.1.2, METHOD Status matching it, and README changelog plus loop text that match E7",
+    "so_that": "a clone sees the version and the epic loop without reading git log",
+    "scope": {
+      "touch": [
+        "VERSION",
+        "METHOD.md",
+        "README.md"
+      ],
+      "forbid": [
+        "bin/"
+      ]
+    },
+    "ac": [
+      "VERSION file is the single line 0.1.2",
+      "METHOD.md Status line contains 0.1.2",
+      "bin/boot stdout contains keel v0.1.2",
+      "bin/verify exits 0",
+      "README.md Changelog has a v0.1.2 section that lists US-31 through US-36 by id and one-line title",
+      "README.md loop session-start names the BOOT line including epics ids or none",
+      "README.md Status paragraph does not contain the phrase entering P3"
+    ],
+    "dod": [
+      "No new bin/ command",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
