@@ -71,6 +71,18 @@ def wipe_epic_files():
         p.unlink()
 
 
+def epic_listing(sid):
+    """Return the epic object whose stories[] contains sid, or None."""
+    for p in list_epic_paths():
+        try:
+            obj = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(obj, dict) and sid in (obj.get("stories") or []):
+            return obj
+    return None
+
+
 def prefix_overlap(a, b):
     a, b = str(a).rstrip("/"), str(b).rstrip("/")
     if not a or not b:
@@ -444,6 +456,75 @@ def cmd_epic_present(args):
     print(f"PRESENT {obj['id']}")
 
 
+def cmd_epic_accept(args):
+    obj, _path = load_epic(args.epic_id)
+    arr = load_stories()
+    store = {s.get("id"): s for s in arr if isinstance(s, dict)}
+    illegal = ("in_progress", "ready", "backlog", "blocked")
+    for sid in obj.get("stories") or []:
+        st = store.get(sid)
+        status = st.get("status") if st else "missing"
+        if status in illegal or status not in ("review", "done"):
+            print(f"epic-accept refused · {sid} is {status}", file=sys.stderr)
+            sys.exit(1)
+    for sid in obj.get("stories") or []:
+        st = store[sid]
+        if st.get("status") == "review":
+            st["status"] = "done"
+    obj["status"] = "done"
+    save_stories(arr)
+    save_epic(obj)
+    print(f"ACCEPT {obj['id']}")
+
+
+def cmd_park(args):
+    arr = load_stories()
+    target = None
+    for s in arr:
+        if s.get("id", "").lower() == args.story_id.lower():
+            target = s
+            break
+    if target is None:
+        sys.exit(f"keel: story '{args.story_id}' not found in {STORIES.name}")
+    target["status"] = "blocked"
+    save_stories(arr)
+    print(f"PARK {target['id']}")
+
+
+def cmd_reassign(args):
+    dest = args.to
+    arr = load_stories()
+    target = None
+    for s in arr:
+        if s.get("id", "").lower() == args.story_id.lower():
+            target = s
+            break
+    if target is None:
+        sys.exit(f"keel: story '{args.story_id}' not found in {STORIES.name}")
+    sid = target["id"]
+    current = epic_listing(sid)
+    if dest == "backlog":
+        target["status"] = "backlog"
+        if current:
+            current["stories"] = [x for x in (current.get("stories") or []) if x != sid]
+            save_epic(current)
+    elif dest == "ready":
+        target["status"] = "ready"
+    else:
+        dest_obj, _ = load_epic(dest)
+        if current and current.get("id") != dest_obj.get("id"):
+            current["stories"] = [x for x in (current.get("stories") or []) if x != sid]
+            save_epic(current)
+        stories = dest_obj.get("stories") or []
+        if sid not in stories:
+            stories.append(sid)
+            dest_obj["stories"] = stories
+        save_epic(dest_obj)
+        target["epic"] = dest_obj["id"]
+    save_stories(arr)
+    print(f"REASSIGN {sid} → {dest}")
+
+
 # ---------------------------------------------------------------- state
 def cmd_state(args):
     stories = load_stories()
@@ -666,6 +747,8 @@ adapters are generated · complexity pays rent.
 
 Reporting law: any "done" claim must cite evidence (commit hash or artifact path).
 Unevidenced reports are void. Session end = P-END protocol in METHOD.md §3.
+
+The agent must not run park, reassign, or epic-accept.
 """
 
 
@@ -902,6 +985,9 @@ def main():
     ec = sub.add_parser("epic-claim"); ec.add_argument("epic_id"); ec.set_defaults(fn=cmd_epic_claim)
     epk = sub.add_parser("epic-pack"); epk.add_argument("epic_id"); epk.set_defaults(fn=cmd_epic_pack)
     epr = sub.add_parser("epic-present"); epr.add_argument("epic_id"); epr.set_defaults(fn=cmd_epic_present)
+    ea = sub.add_parser("epic-accept"); ea.add_argument("epic_id"); ea.set_defaults(fn=cmd_epic_accept)
+    pk = sub.add_parser("park"); pk.add_argument("story_id"); pk.set_defaults(fn=cmd_park)
+    rs = sub.add_parser("reassign"); rs.add_argument("story_id"); rs.add_argument("--to", required=True); rs.set_defaults(fn=cmd_reassign)
     p = sub.add_parser("pack"); p.add_argument("story_id"); p.add_argument("--save", action="store_true"); p.set_defaults(fn=cmd_pack)
     s = sub.add_parser("state"); s.add_argument("--phase"); s.add_argument("--cue"); s.add_argument("--verified"); s.set_defaults(fn=cmd_state)
     sub.add_parser("distill").set_defaults(fn=cmd_distill)

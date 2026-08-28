@@ -21,4 +21,6 @@ adapters are generated · complexity pays rent.
 Reporting law: any "done" claim must cite evidence (commit hash or artifact path).
 Unevidenced reports are void. Session end = P-END protocol in METHOD.md §3.
 
+The agent must not run park, reassign, or epic-accept.
+
 Full manual: METHOD.md. Toolchain in bin/ (stdlib Python).

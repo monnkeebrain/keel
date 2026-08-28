@@ -849,7 +849,7 @@
     "title": "Operator accept E-n, park, and reassign",
     "epic": "E7",
     "priority": "p0",
-    "status": "ready",
+    "status": "review",
     "as_a": "operator judging a presented epic",
     "i_want": "commands to accept the epic, park a story, or reassign a story",
     "so_that": "agents cannot park or close the slice",

@@ -169,11 +169,14 @@ When no unlocked+logical story remains: present the epic (epic →
 Stop.
 
 ### P-EPIC-ACCEPT
-`park US-xx` and `reassign US-xx` are operator-only.
-`accept E-n` is legal only when every story still listed on the epic
-is `done`. It may batch-accept remaining `review` stories on that
-epic. Partial: accept some stories; park or reassign the rest; epic
-stays open until the listed set is all `done`.
+`bin/park US-xx` and `bin/reassign US-xx` are operator-only.
+`bin/epic-accept E-n` is operator-only: legal when every story still
+listed on the epic is `review` or `done` — remaining `review` stories
+become `done` and the epic becomes `done`. It refuses if any listed
+story is `in_progress`, `ready`, `backlog`, or `blocked`.
+Partial: accept some stories; park or reassign the rest; epic stays
+open until the listed set is all `done`.
+The agent must not run park, reassign, or epic-accept.
 
 ## 4. Toolchain
 
