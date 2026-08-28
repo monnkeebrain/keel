@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-019 · 2026-08-28 · P-EPIC protocols in METHOD (text; no bin yet)
+Rationale: take E-n had to be defined before any epic command existed,
+or agents would invent machinery.
+Consequences: METHOD §3 P-EPIC-STORY/SIGN/RUN/PRESENT/ACCEPT bind;
+park/reassign operator-only; accept E-n only when listed stories are
+done; take US-xx still does not chain. Store and bin/ are later E7
+stories. A-006 TRIAL.
+Refs: US-31; A-006; archive/evidence/US-31-run01.md.
+
 ## D-018 · 2026-08-28 · Plan accepted: operator-only park/reassign; overview groups by epic
 Rationale: Operator accepted the epic plan iff park and reassign require
 a human speech act, and overview.html clusters stories by epic.

@@ -719,7 +719,7 @@
     "title": "METHOD P-EPIC protocols (text only)",
     "epic": "E7",
     "priority": "p0",
-    "status": "review",
+    "status": "done",
     "as_a": "agent or operator opening METHOD.md",
     "i_want": "P-EPIC-STORY, SIGN, RUN, present, and accept E-n written in METHOD §3",
     "so_that": "take E-n is defined before any new bin/ command exists",
