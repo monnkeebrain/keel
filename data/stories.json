@@ -493,7 +493,7 @@
     "title": "Overview shows image evidence for review stories",
     "epic": "E5",
     "priority": "p1",
-    "status": "ready",
+    "status": "review",
     "as_a": "operator reviewing a UI story",
     "i_want": "overview Needs-you to embed the newest png, jpg, or webp next to the evidence quote",
     "so_that": "I can judge a screenshot from file:// without opening the chat",

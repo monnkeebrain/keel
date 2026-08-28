@@ -295,6 +295,7 @@ ul{margin:6px 0} .cue{background:#fffbe6;border:1px solid #e6d24c;padding:10px 1
 .gate.issues{background:#fdecea;border-color:#d93025;color:#c5221f}
 label.chk{display:block;font-size:13.5px;padding:2px 0;cursor:pointer}
 .evq{background:#fafafa;border-left:3px solid #bbb;margin:6px 0;padding:4px 8px;font-size:12.5px;color:#444;white-space:pre-wrap}
+.evq img{display:block;max-width:100%;margin-top:8px;border:1px solid #ddd}
 .art a{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:#0a58ca;margin-right:12px}
 ul.checks{list-style:none;padding-left:2px;font-size:13.5px}"""
 
@@ -306,6 +307,18 @@ def esc(t):
 def newest_artifact(kind, sid):
     d = ARCHIVE / kind
     hits = sorted(d.glob(f"{sid}-*.md")) if d.exists() else []
+    return hits[-1] if hits else None
+
+
+def newest_image(sid):
+    d = ARCHIVE / "evidence"
+    if not d.exists():
+        return None
+    hits = []
+    for ext in ("png", "jpg", "jpeg", "webp"):
+        hits.extend(d.glob(f"{sid}-*.{ext}"))
+        hits.extend(d.glob(f"{sid}-*.{ext.upper()}"))
+    hits = sorted(set(hits), key=lambda p: (p.stat().st_mtime, p.name))
     return hits[-1] if hits else None
 
 
@@ -332,10 +345,19 @@ def cmd_render(args):
         h.append("</table>")
         for s in needs:
             ev = newest_artifact("evidence", s["id"])
+            img = newest_image(s["id"])
+            if not ev and not img:
+                continue
+            block = [f"<div class='evq'><b>{s['id']} evidence:</b>"]
             if ev:
                 rel = ev.relative_to(ROOT).as_posix()
                 head3 = esc("\n".join(ev.read_text(encoding="utf-8").splitlines()[:3]))
-                h.append(f"<div class='evq'><b>{s['id']} evidence:</b> <a href='{rel}'>{rel}</a>\n{head3}</div>")
+                block.append(f" <a href='{rel}'>{rel}</a>\n{head3}")
+            if img:
+                rel = img.relative_to(ROOT).as_posix()
+                block.append(f"<img src='{esc(rel)}' alt='{esc(s['id'])} evidence'>")
+            block.append("</div>")
+            h.append("".join(block))
     else:
         h.append("<div class='sub'>nothing waiting on human judgment ✓</div>")
     h.append("<h2>Progress</h2><table><tr><th>backlog</th><th>ready</th><th>in progress</th><th>review</th><th>blocked</th><th>done</th></tr><tr>")
