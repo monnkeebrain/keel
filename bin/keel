@@ -34,6 +34,10 @@ def load_stories():
     return json.loads(STORIES.read_text(encoding="utf-8"))
 
 
+def save_stories(arr):
+    STORIES.write_text(json.dumps(arr, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
 def get_story(sid):
     for s in load_stories():
         if s.get("id", "").lower() == sid.lower():
@@ -102,6 +106,32 @@ def cmd_gate(args):
         print(f"{sev:<7} {msg}")
     print(verdict)
     sys.exit(1 if blockers else 0)
+
+
+# ---------------------------------------------------------------- claim
+def cmd_claim(args):
+    arr = load_stories()
+    target = None
+    for s in arr:
+        if s.get("id", "").lower() == args.story_id.lower():
+            target = s
+            break
+    if target is None:
+        sys.exit(f"keel: story '{args.story_id}' not found in {STORIES.name}")
+    if target["status"] != "ready":
+        print(f"claim refused · {target['id']} status is {target['status']} (need ready)",
+              file=sys.stderr)
+        sys.exit(1)
+    keys_before = set(target.keys())
+    target["status"] = "in_progress"
+    if set(target.keys()) != keys_before:
+        sys.exit("keel: claim must not add story fields")
+    save_stories(arr)
+    root = git("rev-parse", "--show-toplevel")
+    head = git("rev-parse", "--short", "HEAD")
+    print(f"CLAIM {target['id']}")
+    print(f"root {root}")
+    print(f"HEAD {head}")
 
 
 # ---------------------------------------------------------------- pack
@@ -570,6 +600,7 @@ def main():
     ap = argparse.ArgumentParser(prog="keel")
     sub = ap.add_subparsers(dest="cmd", required=True)
     g = sub.add_parser("gate"); g.add_argument("story_id"); g.set_defaults(fn=cmd_gate)
+    c = sub.add_parser("claim"); c.add_argument("story_id"); c.set_defaults(fn=cmd_claim)
     p = sub.add_parser("pack"); p.add_argument("story_id"); p.add_argument("--save", action="store_true"); p.set_defaults(fn=cmd_pack)
     s = sub.add_parser("state"); s.add_argument("--phase"); s.add_argument("--cue"); s.add_argument("--verified"); s.set_defaults(fn=cmd_state)
     sub.add_parser("distill").set_defaults(fn=cmd_distill)

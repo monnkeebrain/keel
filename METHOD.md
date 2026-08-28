@@ -103,7 +103,8 @@ operator signs (commit message: `sign US-xx`). No self-promotion to
 ready without the sign commit.
 
 ### P-RUN Execution flow
-`bin/pack US-xx` → execute within scope → verify each AC/DoD →
+`bin/claim US-xx` (ready → in_progress; more than one in_progress ID is
+allowed) → `bin/pack US-xx` → execute within scope → verify each AC/DoD →
 report evidence list → operator accepts/rejects → status update +
 decision entry if material → commit `accept US-xx`.
 
@@ -122,9 +123,9 @@ At phase end or when archive grows: run distill, move raw log to
 
 ## 4. Toolchain
 
-`bin/keel` dispatcher plus thin wrappers: `bin/gate` · `bin/pack` ·
-`bin/state` · `bin/distill` · `bin/render` · `bin/adapt` · `bin/boot` ·
-`bin/verify` · `bin/init`.
+`bin/keel` dispatcher plus thin wrappers: `bin/gate` · `bin/claim` ·
+`bin/pack` · `bin/state` · `bin/distill` · `bin/render` · `bin/adapt` ·
+`bin/boot` · `bin/verify` · `bin/init`.
 Stdlib Python only — no pip installs — so it runs identically in OT slim
 containers, VPSes, and locally. Invocation: `bin/gate US-xx`,
 `bin/state --cue "…"`, `bin/render`, `bin/adapt`, `bin/verify`, `bin/boot`.
