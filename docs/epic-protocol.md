@@ -119,7 +119,8 @@ Then epic `ready`.
    to proceed**, pack it and go to 4. No new human `take`.
 6. **Not logical:** stop. Do not park, do not reassign, do not invent
    a replacement. Include a recommended park/reassign in the present.
-7. **Present:** no remaining unlocked+logical story. Epic → `review`.
+7. **Present:** no remaining unlocked+logical story. `bin/epic-present E-n`
+   sets epic status to `review` and prints `PRESENT E-n`.
    Report: evidence index (every `review` story + path), waiting-on
    predecessor list, leftover `backlog`, recommended parks.
    Stop. Do not mark stories or epic `done`.

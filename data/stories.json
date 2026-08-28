@@ -765,14 +765,16 @@
     },
     "ac": [
       "An epic is stored as data/epics/<id>.json with keys id, title, goal, stories, depends_on, scope, status",
-      "bin/epic-gate E-n exits 0 when the file is well-formed and listed stories exist",
-      "bin/epic-gate E-n exits non-zero when stories[] names a missing id",
-      "bin/epic-claim E-n on status ready sets status to in_progress and prints CLAIM E-n",
+      "bin/epic-gate E-n exits 0 when well-formed, listed stories exist, and each story.epic equals this id",
+      "bin/epic-gate E-n exits non-zero on missing story id, story.epic mismatch, undone depends_on epic, or touch overlap with a non-done epic",
+      "bin/epic-claim E-n on ready sets in_progress and prints CLAIM E-n; exits non-zero if another epic is in_progress",
       "bin/epic-claim E-n when status is not ready exits non-zero and leaves the file unchanged",
-      "METHOD.md §2 names data/epics/*.json"
+      "bin/init deletes data/epics/*.json and keeps the directory",
+      "bin/verify prints FAIL and exits 1 when two epic files share an id"
     ],
     "dod": [
       "Stdlib Python only, wrappers matching existing bin/ style",
+      "METHOD.md §2 names data/epics/*.json",
       "Accepted via accept flow with evidence list"
     ]
   },
@@ -799,12 +801,14 @@
       "bin/epic-pack E-n prints a cover sheet listing each story id, status, and unlocked yes or no",
       "bin/epic-pack E-n then prints the same write-set and story pack as bin/pack for the first unlocked story",
       "METHOD.md P-EPIC-RUN states: after review, pack the next unlocked story in this epic without a new take",
-      "A command sets the epic file status to review (present) and prints PRESENT E-n",
-      "bin/boot stdout contains the substring epics followed by in_progress and review epic ids, or epics none",
-      "bin/adapt then bin/verify exits 0"
+      "bin/epic-present E-n sets that epic status to review and prints PRESENT E-n",
+      "bin/boot stdout contains epics followed by in_progress and review epic ids, or epics none",
+      "bin/state writes an Active epics line listing those ids or none",
+      "bin/pack write-set states status blocked is operator-only"
     ],
     "dod": [
       "Stdlib Python only",
+      "bin/adapt then bin/verify exits 0",
       "Accepted via accept flow with evidence list"
     ]
   },
@@ -828,6 +832,7 @@
     "ac": [
       "AMENDMENTS.md records optional schema field depends_on as an array of story ids",
       "A story without depends_on still gets bin/gate exit 0 (no BLOCKER)",
+      "bin/gate prints BLOCKER when depends_on names an id not in the store",
       "bin/claim US-xx exits non-zero when any depends_on id is not status done",
       "bin/pack US-xx exits non-zero when any depends_on id is not status done",
       "bin/epic-pack treats a story as unlocked only if status is ready and every depends_on id is done",
@@ -859,7 +864,7 @@
       "bin/epic-accept E-n when every listed story is review or done sets those review stories to done and the epic to done",
       "bin/epic-accept E-n exits non-zero if any listed story is in_progress, ready, backlog, or blocked",
       "bin/park US-xx sets that story status to blocked and prints PARK US-xx",
-      "bin/reassign US-xx --to backlog removes the id from its epic stories list and sets status backlog",
+      "bin/reassign US-xx --to backlog|ready|E-n: backlog removes from epic; ready keeps id sets ready; E-n moves id and story.epic",
       "bin/park and bin/reassign are documented in METHOD as operator-only",
       "Adapters state the agent must not run park, reassign, or epic-accept"
     ],
