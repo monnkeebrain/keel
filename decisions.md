@@ -3,6 +3,14 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-012 · 2026-08-28 · Matrix is the only in-repo pass-claim source
+Rationale: README lagged the tests that had already run. Provenance
+must match the ledger, not a stale subset.
+Consequences: `docs/testing-matrix.md` names every tested harness and
+model (P2 arms plus operator-attested PASS rows). README Status names
+nothing absent from that page. The marketing site is out of this repo.
+Refs: US-24; archive/evidence/US-24-run01.md.
+
 ## D-011 · 2026-08-28 · Overview embeds image evidence
 Rationale: UI accept cannot be judged from three quoted markdown lines.
 Consequences: Needs-you shows the newest `archive/evidence/US-xx-*.png|.jpg|.webp`
