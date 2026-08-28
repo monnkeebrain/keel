@@ -3,6 +3,14 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-026 · 2026-08-28 · v0.1.2 cut: E7 changelog, README current
+Rationale: clones still saw 0.1.1 and a README that said entering P3
+and a BOOT line without epics after E7 had landed.
+Consequences: VERSION is 0.1.2. METHOD Status matches. README changelog
+lists US-31..36. Loop BOOT line includes `epics <ids or none>`. Status
+paragraph no longer says entering P3. bin/ untouched.
+Refs: US-37; archive/evidence/US-37-run01.md.
+
 ## D-025 · 2026-08-28 · E7 complete; E8 isolation planned next
 Rationale: US-31..36 accepted. Dispatch works for 1H×1A×1 working
 copy. Two agents still cannot both land claims on stories.json.
