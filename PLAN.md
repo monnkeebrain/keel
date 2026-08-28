@@ -88,6 +88,12 @@ Governance per AMENDMENTS.md. Resume suite reruns on every amendment.
 MCP reconsidered only after months of file+CLI stability and a proven
 repetitive operation.
 
+### P6 — Epic protocol (candidate)
+Dispatch unit larger than one story, still one accept key per story.
+Plan: `docs/epic-protocol.md`. Not in METHOD until a signed story.
+MVP is 1H+1A chaining inside one epic. Multi-agent isolation is E8.
+- Exit gate: plan accepted by operator; then E7 stories drafted and signed.
+
 ## Standing metrics (only four)
 
 1. Resume-test pass rate per harness × model

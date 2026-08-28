@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-016 · 2026-08-28 · US-27..30 abandoned; epic protocol planned first
+Rationale: isolation stories (worktree, claimer, story-per-file, clerk)
+were unsigned. Operator dropped them so the epic loop could be designed
+before more 1:1 machinery. IDs stay (invariant 6).
+Consequences: US-27..30 status `abandoned`. Candidate protocol lives in
+`docs/epic-protocol.md` (not METHOD). Isolation returns as E8 after E7
+MVP is dogfooded. US-18 remains backlog.
+Refs: US-27..30; docs/epic-protocol.md.
+
 ## D-015 · 2026-08-28 · v0.1.1 cut: alpha disclaimer and changelog
 Rationale: clones were reading "method core proven" with no version
 match to a changelog and no risk label.

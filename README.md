@@ -88,6 +88,7 @@ Stdlib Python only; no pip installs; no build step; git is the only runtime.
 
 `docs/tips-and-tricks.md` — field-tested patterns.
 `docs/testing-matrix.md` — the provenance behind "it works".
+`docs/epic-protocol.md` — epic dispatch candidate (not in force).
 
 ## Governance
 
