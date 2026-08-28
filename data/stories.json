@@ -783,7 +783,7 @@
     "title": "take E-n chains unlocked stories and presents the epic",
     "epic": "E7",
     "priority": "p0",
-    "status": "ready",
+    "status": "review",
     "as_a": "agent taking an epic",
     "i_want": "a cover sheet, one packed story at a time, chain when unlocked, then epic status review",
     "so_that": "I can finish independent stories without a new human take",

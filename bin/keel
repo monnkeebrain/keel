@@ -276,8 +276,7 @@ def cmd_epic_claim(args):
 
 
 # ---------------------------------------------------------------- pack
-def cmd_pack(args):
-    s = get_story(args.story_id)
+def build_story_pack(s):
     laws = []
     if LAWS_DIR.exists():
         laws = sorted(p for p in LAWS_DIR.glob("*.md"))
@@ -305,8 +304,9 @@ def cmd_pack(args):
     out.append("- src/")
     out.append("- archive/evidence/")
     out.append("- archive/packs/")
-    out.append("This story's status may be set to in_progress, review, or blocked.")
+    out.append("This story's status may be set to in_progress or review.")
     out.append("Status done is forbidden.")
+    out.append("Status blocked is operator-only.")
     out.append("")
     out.append("## Do-not-write")
     out.append("- METHOD.md")
@@ -344,15 +344,66 @@ def cmd_pack(args):
     cue = sf.get("resume_cue", "")
     if cue:
         out.append(f"\n## Resume context\n{cue}")
-    text = "\n".join(out) + "\n"
+    return "\n".join(out) + "\n"
+
+
+def cmd_pack(args):
+    text = build_story_pack(get_story(args.story_id))
     if args.save:
         ARCHIVE.mkdir(exist_ok=True)
         pdir = ARCHIVE / "packs"; pdir.mkdir(exist_ok=True)
-        fname = pdir / f"{s['id']}-{NOW():%Y%m%d-%H%M%S}.md"
+        fname = pdir / f"{args.story_id}-{NOW():%Y%m%d-%H%M%S}.md"
         fname.write_text(text, encoding="utf-8")
         print(f"pack saved → {fname.relative_to(ROOT)} ({len(text)} bytes)")
     else:
         print(text, end="")
+
+
+def story_is_unlocked(s, by_id):
+    if s.get("status") != "ready":
+        return False
+    for did in s.get("depends_on") or []:
+        pred = by_id.get(did)
+        if not pred or pred.get("status") != "done":
+            return False
+    return True
+
+
+def active_epic_ids():
+    ids = []
+    for p in list_epic_paths():
+        try:
+            o = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        if isinstance(o, dict) and o.get("status") in ("in_progress", "review"):
+            ids.append(str(o.get("id") or p.stem))
+    return ids
+
+
+def cmd_epic_pack(args):
+    obj, _path = load_epic(args.epic_id)
+    store = {s.get("id"): s for s in load_stories() if isinstance(s, dict)}
+    out = [f"# EPIC PACK · {obj.get('id')}", f"goal {obj.get('goal', '')}", "", "## Stories"]
+    first = None
+    for sid in obj.get("stories") or []:
+        st = store.get(sid)
+        status = st.get("status") if st else "missing"
+        unlocked = "yes" if st and story_is_unlocked(st, store) else "no"
+        out.append(f"- {sid} · {status} · unlocked {unlocked}")
+        if first is None and st and story_is_unlocked(st, store):
+            first = st
+    text = "\n".join(out) + "\n"
+    print(text, end="")
+    if first:
+        print(build_story_pack(first), end="")
+
+
+def cmd_epic_present(args):
+    obj, _path = load_epic(args.epic_id)
+    obj["status"] = "review"
+    save_epic(obj)
+    print(f"PRESENT {obj['id']}")
 
 
 # ---------------------------------------------------------------- state
@@ -380,7 +431,8 @@ def cmd_state(args):
         f"- Open intents: {by.get('review', 0)} review · {by.get('blocked', 0)} blocked"
         + (f" ({', '.join(ids_by.get('review', []) + ids_by.get('blocked', []))})" if (ids_by.get('review') or ids_by.get('blocked')) else ""),
         f"- Active work: {by.get('in_progress', 0)}"
-        + (f" ({', '.join(ids_by['in_progress'])})" if ids_by.get('in_progress') else ""),
+        + (f" ({', '.join(ids_by.get('in_progress', []))})" if ids_by.get('in_progress') else ""),
+        f"- Active epics: {', '.join(active_epic_ids()) or 'none'}",
         f"- Ready to launch: {ready}" + (f" ({', '.join(ids_by['ready'])})" if ready else ""),
         f"- Backlog: {by.get('backlog', 0)} · Done: {by.get('done', 0)}",
         "",
@@ -562,9 +614,9 @@ You are working inside a **keel** method repository. Before ANY work:
 1. `git pull --ff-only` (fresh environment: clone first; pull fails → stop and report).
 2. Read `STATE.md` completely.
 3. Read METHOD.md §1 invariants; repo wins over anything you were told elsewhere.
-4. Task routing: given a story ID → load it + referenced laws only. No task → report
+4. Task routing: given a story ID → load it + referenced laws only. Given an epic ID → P-EPIC-RUN (this epic only). No task → report
    phase / open intents / resume cue / ready count, then wait. Never invent work.
-5. Emit: `BOOT ok · <phase> · <n ready> · <resume cue>` before doing anything.
+5. Emit: `BOOT ok · <phase> · <n ready> · epics <ids or none> · <resume cue>` before doing anything.
 
 Forbidden until the BOOT line: editing files, running mutations, committing,
 branching, installing, "improving" docs.
@@ -799,7 +851,7 @@ def cmd_boot(args):
     ready = sum(1 for s in stories if s["status"] == "ready")
     sf = parse_state_fields(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
     ver = (ROOT / "VERSION").read_text(encoding="utf-8").strip() if (ROOT / "VERSION").exists() else "dev"
-    print(f"BOOT ok · keel v{ver} · {sf.get('phase','?')} · {ready} ready · {sf.get('resume_cue','-')}")
+    print(f"BOOT ok · keel v{ver} · {sf.get('phase','?')} · {ready} ready · epics {', '.join(active_epic_ids()) or 'none'} · {sf.get('resume_cue','-')}")
 
 
 # ---------------------------------------------------------------- main
@@ -810,6 +862,8 @@ def main():
     c = sub.add_parser("claim"); c.add_argument("story_id"); c.set_defaults(fn=cmd_claim)
     eg = sub.add_parser("epic-gate"); eg.add_argument("epic_id"); eg.set_defaults(fn=cmd_epic_gate)
     ec = sub.add_parser("epic-claim"); ec.add_argument("epic_id"); ec.set_defaults(fn=cmd_epic_claim)
+    epk = sub.add_parser("epic-pack"); epk.add_argument("epic_id"); epk.set_defaults(fn=cmd_epic_pack)
+    epr = sub.add_parser("epic-present"); epr.add_argument("epic_id"); epr.set_defaults(fn=cmd_epic_present)
     p = sub.add_parser("pack"); p.add_argument("story_id"); p.add_argument("--save", action="store_true"); p.set_defaults(fn=cmd_pack)
     s = sub.add_parser("state"); s.add_argument("--phase"); s.add_argument("--cue"); s.add_argument("--verified"); s.set_defaults(fn=cmd_state)
     sub.add_parser("distill").set_defaults(fn=cmd_distill)

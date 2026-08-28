@@ -152,6 +152,7 @@ Operator: `take E-n`. Agent claims the epic, then chains every
 **unlocked** story in that epic (ready, listed, every story
 `depends_on` is `done`) that is logical to proceed: one story packed
 and evidenced to `review` at a time, no new human take between them.
+After review, pack the next unlocked story in this epic without a new take.
 If the next story is not logical: stop and present — do not invent a
 replacement. Do not start another epic. One in-progress epic per
 working copy.
