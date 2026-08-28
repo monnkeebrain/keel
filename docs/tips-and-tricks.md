@@ -43,3 +43,9 @@ question: "Accept or reject." Then a human word moves the state.
 Unzipped folder, no `.git`? `bin/init` creates a local repository on `main`
 and everything works offline. Add an origin later if sync becomes real.
 Onboarding friction is a method bug, not a staff failing.
+
+## One writer per working copy
+Concurrent writes to `data/stories.json` inside one working copy are
+unsupported. Parallel agents isolate via git worktrees or separate
+clones, then `git pull --ff-only` and `git push`. 1:1 sessions do not
+create a worktree.
