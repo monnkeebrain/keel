@@ -906,7 +906,7 @@
     "title": "v0.1.2 — E7 changelog and README current",
     "epic": "E7",
     "priority": "p0",
-    "status": "ready",
+    "status": "review",
     "as_a": "operator publishing the method",
     "i_want": "VERSION 0.1.2, METHOD Status matching it, and README changelog plus loop text that match E7",
     "so_that": "a clone sees the version and the epic loop without reading git log",

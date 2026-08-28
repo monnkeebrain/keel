@@ -19,8 +19,8 @@ Hermes, OpenCode, Codex, Claude Code, Amp Code, Grok Build, Factory Droid
 × Grok 4.6, Claude Opus, Claude Fable, GPT-5.5, GPT-5.6, Qwen3.8-27B, Kimi 3,
 Ox Alpha / GLM 5.3 Flash, Qwen 3.8. Provenance: `docs/testing-matrix.md` only.
 Acceptance gate held under every model tested (agents halt and wait for
-human "accept" — verified, not assumed). Currently entering P3: first
-staff pilot on a real client project.
+human "accept" — verified, not assumed). Epic dispatch (E7) is in METHOD.
+P4 workshop skill in testing. Isolation for 1H+N is a candidate.
 
 ---
 
@@ -52,7 +52,7 @@ the missing `.git` and creates a local repository automatically.
 1. **Session start** — open any harness in the repo. Codex/OpenCode/Hermes
    read the root `AGENTS.md`/`.hermes.md` automatically; in Open WebUI paste
    `adapters/owui-system-prompt.md`. The agent must emit
-   `BOOT ok · <phase> · <n ready> · <cue>` before touching anything.
+   `BOOT ok · <phase> · <n ready> · epics <ids or none> · <cue>` before touching anything.
 2. **Intent → contract** — run `skills/story-workshop/SKILL.md` with your
    stakeholder: five question rounds → draft story → `bin/gate US-xx` →
    human signs (`sign US-xx`). Unverifiable stories get parked, not shipped.
@@ -98,6 +98,14 @@ confirmed or reverted; deletions are cheap, additions must survive a real
 project). Invariants live in METHOD.md §1. Complexity must pay rent.
 
 ## Changelog
+
+v0.1.2
+- US-31 METHOD P-EPIC protocols (text only)
+- US-32 One file per epic plus epic-gate and epic-claim
+- US-33 take E-n chains unlocked stories and presents the epic
+- US-34 Optional story depends_on; pack and claim refuse if predecessor is not done
+- US-35 Operator accept E-n, park, and reassign
+- US-36 Overview groups stories by epic
 
 v0.1.1
 - US-19 VERSION file is the single version string
