@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-014 · 2026-08-28 · bin/state must tolerate empty status buckets
+Rationale: F-007 — first review-without-blocked story crashed `bin/state`
+on `ids_by['blocked']`. The fix shipped inside the US-19 review commit
+instead of as its own contract.
+Consequences: `cmd_state` joins review/blocked with `.get(key, [])`.
+A mid-run tool crash is FAILURES immediately; a fix outside the packed
+ACs is a follow-up story, not a passenger. No METHOD change (noted).
+Refs: F-007; US-19; e7e35ba.
+
 ## D-013 · 2026-08-28 · One writer per working copy; worktrees named
 Rationale: stories.json cannot take two writers in one working copy.
 Forbidding all parallelism would paint the method into a corner.

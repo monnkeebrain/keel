@@ -554,5 +554,164 @@
       "No schema change",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-26",
+    "title": "v0.1.1 — alpha disclaimer and changelog",
+    "epic": "E5",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "operator publishing the method",
+    "i_want": "VERSION 0.1.1, an alpha disclaimer at the top of README, and a short changelog of the ghost-fix batch",
+    "so_that": "a clone sees the version, the risk, and what changed without reading git log",
+    "ac": [
+      "VERSION file is the single line 0.1.1",
+      "METHOD.md Status line contains 0.1.1",
+      "bin/boot stdout contains keel v0.1.1",
+      "bin/verify exits 0",
+      "README.md places a disclaimer above the Status paragraph stating the method is alpha, work in progress, and use at own risk",
+      "README.md has a Changelog section that lists US-19 through US-25 by id and one-line title",
+      "Changelog names F-007 (bin/state KeyError on missing blocked bucket) and D-014"
+    ],
+    "dod": [
+      "No new bin/ command",
+      "Accepted via accept flow with evidence list"
+    ],
+    "scope": {
+      "touch": [
+        "VERSION",
+        "METHOD.md",
+        "README.md"
+      ],
+      "forbid": [
+        "bin/"
+      ]
+    }
+  },
+  {
+    "id": "US-27",
+    "title": "bin/claim --worktree creates a git worktree",
+    "epic": "E6",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "operator running two stories in parallel",
+    "i_want": "an optional flag on bin/claim that creates a git worktree for that story",
+    "so_that": "a second agent gets an isolated working copy without a second clone ritual",
+    "ac": [
+      "bin/claim US-xx --worktree creates a git worktree whose directory name contains the story id",
+      "CLAIM stdout includes the worktree path",
+      "git worktree list includes that path after the command",
+      "bin/claim US-xx without --worktree still creates no worktree",
+      "the command does not split data/stories.json and does not add bin/worktree",
+      "METHOD.md still states creating a worktree is not required for 1:1 sessions"
+    ],
+    "dod": [
+      "Stdlib Python only, wired into existing bin/claim",
+      "AMENDMENTS.md Tier B entry for optional worktree on claim, status PROPOSED or TRIAL",
+      "Accepted via accept flow with evidence list"
+    ],
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md",
+        "AMENDMENTS.md"
+      ],
+      "forbid": []
+    }
+  },
+  {
+    "id": "US-28",
+    "title": "Optional claimer.id and claimer.worktree on stories",
+    "epic": "E6",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "operator with two in-progress stories",
+    "i_want": "bin/claim to record optional claimer.id and claimer.worktree on the story",
+    "so_that": "STATE Active work can show who holds the lock without reading git worktree list",
+    "ac": [
+      "AMENDMENTS.md records optional schema field claimer with keys id and worktree, both strings",
+      "A story object without claimer still gets bin/gate exit 0 (no BLOCKER)",
+      "bin/claim writes claimer.worktree from git rev-parse --show-toplevel",
+      "bin/claim writes claimer.id from --claimer if given, otherwise the working-copy directory name",
+      "After claim, bin/state Active work line contains the claimer.id when the field is present",
+      "bin/verify exits 0 on this repo while existing stories have no claimer key"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "METHOD.md §2 names the optional claimer field",
+      "Accepted via accept flow with evidence list"
+    ],
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md",
+        "AMENDMENTS.md",
+        "data/"
+      ],
+      "forbid": []
+    }
+  },
+  {
+    "id": "US-29",
+    "title": "One file per story under data/stories/",
+    "epic": "E6",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "operator with two worktrees claiming different stories",
+    "i_want": "each story stored as data/stories/US-xx.json",
+    "so_that": "two status writes do not edit the same JSON array",
+    "ac": [
+      "Each story lives at data/stories/<id>.json as one JSON object",
+      "data/stories.json is absent after the cutover (not a second store)",
+      "bin/gate, bin/claim, bin/pack, bin/state, bin/render, bin/verify, bin/init read and write the directory",
+      "Changing one story file does not rewrite a sibling story file",
+      "bin/verify prints FAIL and exits 1 on duplicate story ids",
+      "bin/init resets the directory to empty (no story files)",
+      "METHOD.md §2 names data/stories/*.json as the contract store"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "AMENDMENTS.md records the store path change, status PROPOSED or TRIAL",
+      "Accepted via accept flow with evidence list"
+    ],
+    "scope": {
+      "touch": [
+        "data/",
+        "bin/",
+        "METHOD.md",
+        "AMENDMENTS.md"
+      ],
+      "forbid": []
+    }
+  },
+  {
+    "id": "US-30",
+    "title": "Clerk-only writes to the contract store",
+    "epic": "E6",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "execute agent in a worktree",
+    "i_want": "pack to forbid hand-edits of the contract store, and bin/review to flip in_progress to review",
+    "so_that": "status changes go through bin/ commands, not a JSON edit in the run",
+    "ac": [
+      "bin/pack Do-not-write lists the contract store path (data/stories.json or data/stories/)",
+      "bin/review US-xx on an in_progress story sets status to review and prints REVIEW US-xx",
+      "bin/review US-xx when status is not in_progress exits non-zero and leaves the store unchanged",
+      "METHOD.md P-RUN states executing agents do not hand-edit the contract store",
+      "METHOD.md P-RUN names bin/review before waiting for accept",
+      "bin/claim remains the only command that sets in_progress"
+    ],
+    "dod": [
+      "Wired into bin/keel dispatcher plus a bin/review wrapper matching existing wrappers",
+      "Stdlib Python only",
+      "Accepted via accept flow with evidence list"
+    ],
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md"
+      ],
+      "forbid": []
+    }
   }
 ]
