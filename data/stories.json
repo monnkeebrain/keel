@@ -469,7 +469,7 @@
     "title": "Optional scope.touch and scope.forbid on stories",
     "epic": "E5",
     "priority": "p1",
-    "status": "ready",
+    "status": "review",
     "as_a": "operator packing an implementation story",
     "i_want": "an optional scope object with touch and forbid path-prefix arrays",
     "so_that": "pack prints the paths the agent may edit, and those prefixes stay valid in a later git worktree of the same repo",

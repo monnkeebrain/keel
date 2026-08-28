@@ -90,6 +90,14 @@ def gate_issues(s):
         if ac.lower() in seen:
             note("MAJOR", f"AC-{i} duplicates another criterion")
         seen.add(ac.lower())
+    scope = s.get("scope")
+    touch = forbid = []
+    if isinstance(scope, dict):
+        touch = scope.get("touch") or []
+        forbid = scope.get("forbid") or []
+    if s.get("status") in ("backlog", "ready"):
+        if not isinstance(scope, dict) or (not touch and not forbid):
+            note("MINOR", "scope unset — add touch/forbid path prefixes when the story edits files")
     return issues
 
 
@@ -170,6 +178,18 @@ def cmd_pack(args):
     out.append("## Do-not-write")
     out.append("- METHOD.md")
     out.append("- bin/")
+    out.append("")
+    out.append("## Scope")
+    scope = s.get("scope") if isinstance(s.get("scope"), dict) else None
+    touch = list((scope or {}).get("touch") or [])
+    forbid = list((scope or {}).get("forbid") or [])
+    if not touch and not forbid:
+        out.append("Scope: unset")
+    else:
+        for pfx in touch:
+            out.append(f"- touch {pfx}")
+        for pfx in forbid:
+            out.append(f"- forbid {pfx}")
     out.append("")
     out.append(f"## Story {s['id']} · {s['title']}")
     out.append(f"- epic {s.get('epic')} · priority {s.get('priority')} · status {s['status']}")
