@@ -3,6 +3,25 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-023 · 2026-08-28 · epic-accept, park, reassign are operator commands
+Rationale: agents must not park, close, or move work off an epic.
+Those keys stay human.
+Consequences: `bin/epic-accept E-n` batch-dones remaining review
+stories and the epic when every listed id is review or done; refuses
+in_progress/ready/backlog/blocked. `bin/park` → blocked.
+`bin/reassign --to backlog|ready|E-n`. Adapters forbid agents from
+running park, reassign, or epic-accept.
+Refs: US-35; archive/evidence/US-35-run01.md.
+
+## D-022 · 2026-08-28 · optional story depends_on; claim/pack refuse unless done
+Rationale: chaining inside an epic must not build on unaccepted work.
+`review` is not `done`.
+Consequences: schema v0 optional `depends_on[]` of story ids. Gate
+BLOCKER if an id is missing from the store. `bin/claim` and `bin/pack`
+refuse unless every predecessor is `done`. epic-pack unlocked = ready
+and every depends_on is done. A-007 recorded (not stacked as TRIAL).
+Refs: US-34; A-007; archive/evidence/US-34-run01.md.
+
 ## D-021 · 2026-08-28 · epic-pack, epic-present, boot lists active epics
 Rationale: take E-n needs a cover sheet and a present command, and a
 cold BOOT must name in-flight epics. Pack still listed blocked as an
