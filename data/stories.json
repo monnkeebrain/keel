@@ -445,7 +445,7 @@
     "title": "Pack names the default write-set",
     "epic": "E5",
     "priority": "p1",
-    "status": "ready",
+    "status": "review",
     "as_a": "agent executing a packed story",
     "i_want": "the pack to list which paths I may write, relative to this working copy",
     "so_that": "I stay inside this copy's src/ and archive/, which is the same sandbox a future worktree will use",

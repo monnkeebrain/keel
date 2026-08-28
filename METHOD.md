@@ -108,6 +108,11 @@ allowed) → `bin/pack US-xx` → execute within scope → verify each AC/DoD �
 report evidence list → operator accepts/rejects → status update +
 decision entry if material → commit `accept US-xx`.
 
+Default write-set (paths relative to this working-copy root): `src/`,
+`archive/evidence/`, `archive/packs/`. This story's status may be set to
+in_progress, review, or blocked. Status done is forbidden. Do not write
+`METHOD.md` or `bin/` unless the story is about those paths.
+
 ### P-END Session end
 1. Regenerate `STATE.md`: `bin/state` (update resume cue if the frontier
    moved: `bin/state --cue "…"`).
