@@ -397,7 +397,7 @@
     "title": "VERSION file is the single version string",
     "epic": "E5",
     "priority": "p0",
-    "status": "review",
+    "status": "done",
     "as_a": "operator or agent running verify",
     "i_want": "METHOD.md and bin/boot to carry the same version as the VERSION file",
     "so_that": "a clone cannot report two different keel versions in one session",

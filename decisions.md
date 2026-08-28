@@ -3,6 +3,13 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-007 · 2026-08-28 · VERSION file is the only version string
+Rationale: METHOD said v0.2 while VERSION and bin/boot said 0.1.0.
+Two version strings in one clone is a false report.
+Consequences: METHOD Status line carries the VERSION file text;
+bin/verify fails when Status or bin/boot drift from VERSION.
+Refs: US-19; archive/evidence/US-19-run01.md.
+
 ## D-006 · 2026-08-25 · Template purity enforced mechanically; three onboarding ramps
 Rationale: staff arrive however they arrive (clone, Use-this-template,
 downloaded ZIP). The workspace they land in must contain the full method
