@@ -3,6 +3,16 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-024 · 2026-08-28 · overview groups stories by epic
+Rationale: a flat story list is unusable once work is dispatched as
+epics. The operator judges a presented epic as a cluster.
+Consequences: `bin/render` writes one heading per epic id found on
+stories. Same-epic stories sit only under that heading. Missing epic
+field → heading `ungrouped`. Needs-you still lists review/blocked
+stories and, when `data/epics` exists, review epics. Still one file,
+no script.
+Refs: US-36; archive/evidence/US-36-run01.md.
+
 ## D-023 · 2026-08-28 · epic-accept, park, reassign are operator commands
 Rationale: agents must not park, close, or move work off an epic.
 Those keys stay human.

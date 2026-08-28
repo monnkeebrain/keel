@@ -878,7 +878,7 @@
     "title": "Overview groups stories by epic",
     "epic": "E7",
     "priority": "p0",
-    "status": "review",
+    "status": "done",
     "as_a": "operator reading overview.html",
     "i_want": "All stories clustered under their epic id and title",
     "so_that": "I judge a presented epic without a flat ungrouped list",
