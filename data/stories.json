@@ -750,7 +750,7 @@
     "title": "One file per epic plus epic-gate and epic-claim",
     "epic": "E7",
     "priority": "p0",
-    "status": "review",
+    "status": "done",
     "as_a": "operator signing an epic",
     "i_want": "data/epics/E-n.json and commands that gate and claim that file",
     "so_that": "two epics do not share one JSON array",

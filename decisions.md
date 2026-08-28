@@ -3,6 +3,14 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-020 · 2026-08-28 · data/epics/*.json + epic-gate + epic-claim
+Rationale: one JSON array cannot isolate two epic claims. Gate must
+reject missing stories, epic-field mismatch, undone depends_on epics,
+and touch overlap. Claim enforces WIP 1.
+Consequences: store is one file per epic; bin/init wipes *.json;
+bin/verify fails on duplicate epic ids.
+Refs: US-32; archive/evidence/US-32-run01.md.
+
 ## D-019 · 2026-08-28 · P-EPIC protocols in METHOD (text; no bin yet)
 Rationale: take E-n had to be defined before any epic command existed,
 or agents would invent machinery.
