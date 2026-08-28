@@ -538,7 +538,7 @@
     "title": "One writer per working copy; worktrees named as later isolation",
     "epic": "E5",
     "priority": "p1",
-    "status": "review",
+    "status": "done",
     "as_a": "staff member opening a keel repo",
     "i_want": "METHOD.md to forbid concurrent writes to data/stories.json inside one working copy, and to name git worktrees as isolation for later parallel agents",
     "so_that": "two processes in one copy stay unsupported, and adding worktrees later does not reverse this rule",

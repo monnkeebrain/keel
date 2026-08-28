@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-013 · 2026-08-28 · One writer per working copy; worktrees named
+Rationale: stories.json cannot take two writers in one working copy.
+Forbidding all parallelism would paint the method into a corner.
+Consequences: concurrent writes to `data/stories.json` inside one
+working copy are unsupported. Later parallel agents isolate via git
+worktrees or separate clones, then `git pull --ff-only` / `git push`.
+1:1 sessions do not create a worktree. No file split in this story.
+Refs: US-25; archive/evidence/US-25-run01.md.
+
 ## D-012 · 2026-08-28 · Matrix is the only in-repo pass-claim source
 Rationale: README lagged the tests that had already run. Provenance
 must match the ledger, not a stale subset.
