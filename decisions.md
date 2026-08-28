@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-008 · 2026-08-28 · bin/claim writes in_progress
+Rationale: in_progress was shown on STATE and overview but nothing in
+bin/ wrote it. Flight was a ghost.
+Consequences: `bin/claim US-xx` is the ready → in_progress lock; it
+prints working-copy root and short HEAD so a later worktree protocol
+can bind without a schema change. Multiple in_progress IDs are allowed.
+A-004 is TRIAL.
+Refs: US-20; A-004; archive/evidence/US-20-run01.md.
+
 ## D-007 · 2026-08-28 · VERSION file is the only version string
 Rationale: METHOD said v0.2 while VERSION and bin/boot said 0.1.0.
 Two version strings in one clone is a false report.

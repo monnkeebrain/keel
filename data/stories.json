@@ -419,7 +419,7 @@
     "title": "bin/claim sets status to in_progress",
     "epic": "E5",
     "priority": "p0",
-    "status": "review",
+    "status": "done",
     "as_a": "operator starting a run",
     "i_want": "a command that sets a ready story to in_progress and reports this working copy",
     "so_that": "STATE and overview show in-flight IDs, and a later worktree protocol can bind to the printed path without changing this command",
