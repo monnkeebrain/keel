@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-010 · 2026-08-28 · Optional scope.touch / scope.forbid
+Rationale: pack said stay in scope but stories had no paths. Parallel
+agents (later worktrees) need isolatable contracts.
+Consequences: optional `scope` with `touch[]` and `forbid[]` path
+prefixes relative to the working-copy root. Missing scope is not a
+BLOCKER; gate MINOR on backlog/ready. Pack prints Scope: unset or the
+prefixes. A-005 is TRIAL.
+Refs: US-22; A-005; archive/evidence/US-22-run01.md.
+
 ## D-009 · 2026-08-28 · Pack names the default write-set
 Rationale: "do not edit files outside your scope" was a sentence with no
 paths. Agents treated METHOD.md and bin/ as fair game.
