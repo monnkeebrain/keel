@@ -3,6 +3,13 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-018 · 2026-08-28 · Plan accepted: operator-only park/reassign; overview groups by epic
+Rationale: Operator accepted the epic plan iff park and reassign require
+a human speech act, and overview.html clusters stories by epic.
+Consequences: agent may recommend park, must not park. E7 stories
+US-31..36 drafted. Not METHOD until those stories are signed and taken.
+Refs: docs/epic-protocol.md; D-017.
+
 ## D-017 · 2026-08-28 · Epic protocol answers: per-file epics, present, accept E-n
 Rationale: Operator closed the five plan questions and the accept
 model: take epic → finish/validate unlocked stories → present;

@@ -41,10 +41,10 @@ Anti-overfit: 1:1 friction is planning input, not a FAILURES amendment.
 | **Story** | The contract. AC[], DoD[], evidence. Human still owns `done`. |
 | **Epic** | Dispatch envelope: id, goal, ordered story ids, `depends_on` epics, `scope`. One file: `data/epics/E-n.json`. |
 | **Unlocked** | Story is `ready`; every story `depends_on` is `done`; story is listed on this epic. |
-| **Logical to proceed** | Unlocked, and the work so far has not made the next story false or out of scope. If it has: **park**, do not invent a replacement. |
-| **Take epic** | Claim the epic. Chain every story that is unlocked and logical. Validate (evidence per story → `review`). Present the epic. Do not self-accept. |
-| **Present epic** | No further unlocked+logical story. Epic → `review`. Cover: story table, evidence paths, parked/waiting list. |
-| **Reassign** | Operator pulls a `review` (or waiting) story off this epic: back to `ready`/`backlog`, or onto another epic. |
+| **Logical to proceed** | Unlocked, and the work so far has not made the next story false or out of scope. If it has: **stop and present** — do not park, do not invent a replacement. |
+| **Take epic** | Claim the epic. Chain every unlocked story that is logical. Evidence each → `review`. Present the epic. Do not self-accept, park, or reassign. |
+| **Present epic** | No further unlocked+logical story. Epic → `review`. Cover: story table, evidence paths, waiting list, *recommended* parks. |
+| **Park / reassign** | **Operator only.** `park US-xx` or `reassign US-xx`. The agent may recommend; it must not change those statuses. |
 | **Accept epic** | Legal only when every id still listed on the epic is `done`. May be combined with batch-accept of its `review` stories. |
 
 ---
@@ -117,13 +117,12 @@ Then epic `ready`.
 4. Execute. Evidence. Story → `review`. Commit `review US-xx`. Push.
 5. **Chain:** if another story in this epic is unlocked **and logical
    to proceed**, pack it and go to 4. No new human `take`.
-6. **Park:** unlocked on paper but not logical (scope broken, story
-   now false, would piggyback). Status `blocked` or leave `ready` with
-   a parked note in the cover. Do not invent a replacement story.
+6. **Not logical:** stop. Do not park, do not reassign, do not invent
+   a replacement. Include a recommended park/reassign in the present.
 7. **Present:** no remaining unlocked+logical story. Epic → `review`.
-   Report: evidence index (every `review` story + path), parked list,
-   waiting-on-`done`-predecessor list, leftover `backlog`. Stop.
-   Do not mark stories or epic `done`.
+   Report: evidence index (every `review` story + path), waiting-on
+   predecessor list, leftover `backlog`, recommended parks.
+   Stop. Do not mark stories or epic `done`.
 8. P-END: STATE names active epic(s) and the present/waiting ids.
 
 `take US-xx` remains: that story only, no chain, no epic present.
@@ -151,11 +150,15 @@ The operator judges.
 
 - `accept US-aa US-bb` — those `review` stories → `done`. Epic stays
   `review` or `in_progress`.
-- `reassign US-cc` — off this epic’s `stories[]`. Operator names
-  destination: `ready` on this epic (another take), `backlog`, or
-  another epic id. Evidence stays in `archive/` (IDs immutable).
+- `park US-cc` — operator only. Story → `blocked` (stays on the epic
+  until reassigned or later unblocked). Agent recommendations are not
+  a status change.
+- `reassign US-cc` — operator only. Off this epic’s `stories[]`.
+  Destination: `ready` on this epic, `backlog`, or another epic id.
+  Evidence stays in `archive/` (IDs immutable).
 - Epic **`accept E-n` is illegal** until every id **still listed**
-  on the epic is `done`.
+  on the epic is `done` (blocked stories must be reassigned or
+  unblocked and completed first).
 
 **Reject** a story: back to `ready` or `blocked`; dependents stay
 locked. Epic not accepted.
@@ -186,7 +189,8 @@ unchanged.
   Active = epic status `in_progress` or `review`.
 - STATE: those ids, unlocked counts, waiting-on-accept story ids.
   O(current).
-- Overview: group by epic; Needs-you includes epic review rows.
+- Overview: group stories by epic (required, human surface). Needs-you
+  includes epic `review` rows plus story rows. No new JS framework.
 
 ---
 
@@ -208,10 +212,10 @@ Draft only after operator accepts this plan:
    cover sheet + chain + present. Boot line lists active epics.
 3. Story `depends_on[]`; pack/claim refuse unless predecessor `done`.
 4. `accept E-n` batch-closes review stories + epic when legal;
-   partial accept + `reassign`; overview epic row.
-5. Cold-start: `take E7` chains two independent stories, parks or
-   waits on a third with `depends_on`, presents epic. Human
-   `accept E7` *or* partial + reassign. Resume suite item.
+   operator-only `park` / `reassign`; overview **groups stories by epic**.
+5. Cold-start: `take E7` chains two independent stories, presents
+   (does not park) if a third is not logical or has `depends_on`.
+   Human `accept E7` *or* partial + park/reassign. Resume suite item.
 
 **E8 — Isolation** (after E7 green): story-per-file → worktree →
 claimer → clerk. WIP cap becomes 3.
@@ -229,7 +233,7 @@ claimer → clerk. WIP cap becomes 3.
 | 1 | One file per epic: `data/epics/E-n.json`. |
 | 2 | Chain after `review` when `depends_on` is empty. Yes. |
 | 3 | Max in-flight epics = 1 until E8, then **3**. |
-| 4 | Unlocked **and logical** → proceed; else **park**. |
+| 4 | Unlocked **and logical** → proceed; else **present** (operator parks). |
 | 5 | BOOT line includes active epic ids. |
 
 ---

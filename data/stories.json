@@ -713,5 +713,187 @@
       ],
       "forbid": []
     }
+  },
+  {
+    "id": "US-31",
+    "title": "METHOD P-EPIC protocols (text only)",
+    "epic": "E7",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "agent or operator opening METHOD.md",
+    "i_want": "P-EPIC-STORY, SIGN, RUN, present, and accept E-n written in METHOD §3",
+    "so_that": "take E-n is defined before any new bin/ command exists",
+    "scope": {
+      "touch": [
+        "METHOD.md",
+        "AMENDMENTS.md"
+      ],
+      "forbid": [
+        "bin/"
+      ]
+    },
+    "ac": [
+      "METHOD.md §3 contains P-EPIC-STORY, P-EPIC-SIGN, P-EPIC-RUN, and P-EPIC-PRESENT",
+      "METHOD.md states park US-xx and reassign US-xx are operator-only",
+      "METHOD.md states the agent must not park, reassign, or mark done",
+      "METHOD.md states accept E-n is legal only when every story still listed on the epic is done",
+      "METHOD.md states take US-xx remains legal and does not chain",
+      "bin/ is not modified in this story"
+    ],
+    "dod": [
+      "AMENDMENTS.md Tier B entry for P-EPIC, status PROPOSED or TRIAL",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-32",
+    "title": "One file per epic plus epic-gate and epic-claim",
+    "epic": "E7",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "operator signing an epic",
+    "i_want": "data/epics/E-n.json and commands that gate and claim that file",
+    "so_that": "two epics do not share one JSON array",
+    "scope": {
+      "touch": [
+        "data/epics/",
+        "bin/",
+        "METHOD.md",
+        "AMENDMENTS.md"
+      ],
+      "forbid": []
+    },
+    "ac": [
+      "An epic is stored as data/epics/<id>.json with keys id, title, goal, stories, depends_on, scope, status",
+      "bin/epic-gate E-n exits 0 when the file is well-formed and listed stories exist",
+      "bin/epic-gate E-n exits non-zero when stories[] names a missing id",
+      "bin/epic-claim E-n on status ready sets status to in_progress and prints CLAIM E-n",
+      "bin/epic-claim E-n when status is not ready exits non-zero and leaves the file unchanged",
+      "METHOD.md §2 names data/epics/*.json"
+    ],
+    "dod": [
+      "Stdlib Python only, wrappers matching existing bin/ style",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-33",
+    "title": "take E-n chains unlocked stories and presents the epic",
+    "epic": "E7",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "agent taking an epic",
+    "i_want": "a cover sheet, one packed story at a time, chain when unlocked, then epic status review",
+    "so_that": "I can finish independent stories without a new human take",
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md",
+        "adapters/",
+        "AGENTS.md",
+        ".hermes.md"
+      ],
+      "forbid": []
+    },
+    "ac": [
+      "bin/epic-pack E-n prints a cover sheet listing each story id, status, and unlocked yes or no",
+      "bin/epic-pack E-n then prints the same write-set and story pack as bin/pack for the first unlocked story",
+      "METHOD.md P-EPIC-RUN states: after review, pack the next unlocked story in this epic without a new take",
+      "A command sets the epic file status to review (present) and prints PRESENT E-n",
+      "bin/boot stdout contains the substring epics followed by in_progress and review epic ids, or epics none",
+      "bin/adapt then bin/verify exits 0"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-34",
+    "title": "Optional story depends_on; pack and claim refuse if predecessor is not done",
+    "epic": "E7",
+    "priority": "p1",
+    "status": "backlog",
+    "as_a": "agent packing a story in an epic",
+    "i_want": "an optional depends_on array of story ids that must be done before claim or pack",
+    "so_that": "I do not build on unaccepted work",
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md",
+        "AMENDMENTS.md"
+      ],
+      "forbid": []
+    },
+    "ac": [
+      "AMENDMENTS.md records optional schema field depends_on as an array of story ids",
+      "A story without depends_on still gets bin/gate exit 0 (no BLOCKER)",
+      "bin/claim US-xx exits non-zero when any depends_on id is not status done",
+      "bin/pack US-xx exits non-zero when any depends_on id is not status done",
+      "bin/epic-pack treats a story as unlocked only if status is ready and every depends_on id is done",
+      "bin/verify exits 0 while existing stories have no depends_on key"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "METHOD.md §2 names optional depends_on",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-35",
+    "title": "Operator accept E-n, park, and reassign",
+    "epic": "E7",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "operator judging a presented epic",
+    "i_want": "commands to accept the epic, park a story, or reassign a story",
+    "so_that": "agents cannot park or close the slice",
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md"
+      ],
+      "forbid": []
+    },
+    "ac": [
+      "bin/epic-accept E-n when every listed story is review or done sets those review stories to done and the epic to done",
+      "bin/epic-accept E-n exits non-zero if any listed story is in_progress, ready, backlog, or blocked",
+      "bin/park US-xx sets that story status to blocked and prints PARK US-xx",
+      "bin/reassign US-xx --to backlog removes the id from its epic stories list and sets status backlog",
+      "bin/park and bin/reassign are documented in METHOD as operator-only",
+      "Adapters state the agent must not run park, reassign, or epic-accept"
+    ],
+    "dod": [
+      "Stdlib Python only, wrappers matching existing bin/ style",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-36",
+    "title": "Overview groups stories by epic",
+    "epic": "E7",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "operator reading overview.html",
+    "i_want": "All stories clustered under their epic id and title",
+    "so_that": "I judge a presented epic without a flat ungrouped list",
+    "scope": {
+      "touch": [
+        "bin/keel"
+      ],
+      "forbid": []
+    },
+    "ac": [
+      "bin/render writes one section per epic id found on stories, heading contains that epic id",
+      "Stories with the same epic value appear under that section and not under another epic heading",
+      "A story whose epic field is missing appears under a heading that contains ungrouped",
+      "Needs-you still lists review and blocked stories and, when data/epics exists, review epics",
+      "overview.html stays one file, opens from file://, and has no script src attribute",
+      "bin/render runs and bin/verify exits 0"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
