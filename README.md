@@ -12,6 +12,8 @@ Any agent harness — Hermes, Open WebUI + Open Terminal, Codex, OpenCode —
 plugs in through thin entry files. Nothing important lives in a harness;
 harnesses churn, files persist.
 
+**Disclaimer:** Alpha. Work in progress. Use at your own risk.
+
 **Status:** method core proven. Resume matrix green across Open WebUI + Open Terminal,
 Hermes, OpenCode, Codex, Claude Code, Amp Code, Grok Build, Factory Droid
 × Grok 4.6, Claude Opus, Claude Fable, GPT-5.5, GPT-5.6, Qwen3.8-27B, Kimi 3,
@@ -93,3 +95,16 @@ Failures go to `FAILURES.md` immediately, in fact form — only logged failures
 may change the method (see `AMENDMENTS.md` lifecycle: proposed → trial →
 confirmed or reverted; deletions are cheap, additions must survive a real
 project). Invariants live in METHOD.md §1. Complexity must pay rent.
+
+## Changelog
+
+v0.1.1
+- US-19 VERSION file is the single version string
+- US-20 bin/claim sets status to in_progress
+- US-21 Pack names the default write-set
+- US-22 Optional scope.touch and scope.forbid on stories
+- US-23 Overview shows image evidence for review stories
+- US-24 Matrix and README list every tested harness and model
+- US-25 One writer per working copy; worktrees named as later isolation
+- F-007 bin/state KeyError on missing blocked bucket · D-014
+
