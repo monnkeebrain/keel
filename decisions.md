@@ -3,6 +3,13 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-011 · 2026-08-28 · Overview embeds image evidence
+Rationale: UI accept cannot be judged from three quoted markdown lines.
+Consequences: Needs-you shows the newest `archive/evidence/US-xx-*.png|.jpg|.webp`
+as an img with a relative src, next to the markdown quote when present.
+Md-only review stories emit no img. overview.html stays one file, no script.
+Refs: US-23; archive/evidence/US-23-run01.md; archive/evidence/US-23-run01.png.
+
 ## D-010 · 2026-08-28 · Optional scope.touch / scope.forbid
 Rationale: pack said stay in scope but stories had no paths. Parallel
 agents (later worktrees) need isolatable contracts.
