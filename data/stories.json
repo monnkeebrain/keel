@@ -391,5 +391,168 @@
       "Validated on one trivial and one standard intent through an agent arm",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-19",
+    "title": "VERSION file is the single version string",
+    "epic": "E5",
+    "priority": "p0",
+    "status": "ready",
+    "as_a": "operator or agent running verify",
+    "i_want": "METHOD.md and bin/boot to carry the same version as the VERSION file",
+    "so_that": "a clone cannot report two different keel versions in one session",
+    "ac": [
+      "VERSION remains one line matching ^\\d+\\.\\d+\\.\\d+$",
+      "bin/boot stdout contains the trimmed VERSION file text after the substring 'keel v'",
+      "METHOD.md contains that same VERSION text on its Status line",
+      "bin/verify prints FAIL and exits 1 if METHOD.md Status line does not contain the VERSION text",
+      "bin/verify prints FAIL and exits 1 if bin/boot stdout would not contain 'keel v' plus the VERSION text"
+    ],
+    "dod": [
+      "Stdlib Python only, no pip installs",
+      "Mismatch case proven by a temporary VERSION edit in evidence, then restored",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-20",
+    "title": "bin/claim sets status to in_progress",
+    "epic": "E5",
+    "priority": "p0",
+    "status": "ready",
+    "as_a": "operator starting a run",
+    "i_want": "a command that sets a ready story to in_progress and reports this working copy",
+    "so_that": "STATE and overview show in-flight IDs, and a later worktree protocol can bind to the printed path without changing this command",
+    "ac": [
+      "bin/claim US-xx on a ready story sets that story status to in_progress and prints CLAIM US-xx",
+      "bin/claim US-xx when status is not ready exits non-zero and leaves stories.json unchanged",
+      "CLAIM stdout includes the working-copy root from git rev-parse --show-toplevel and the short HEAD hash",
+      "After a successful claim, bin/state Active work line contains that story ID",
+      "After bin/render, overview.html In flight section contains that story ID",
+      "After two successful claims, Active work lists both IDs and the In flight table has two data rows",
+      "bin/claim does not create a git worktree and adds no story schema fields"
+    ],
+    "dod": [
+      "Wired into bin/keel dispatcher plus a bin/claim wrapper matching existing wrappers",
+      "Stdlib Python only",
+      "METHOD.md P-RUN names claim before pack and allows more than one in_progress ID",
+      "AMENDMENTS.md gains a Tier B entry for P-RUN claim, status PROPOSED or TRIAL",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-21",
+    "title": "Pack names the default write-set",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "ready",
+    "as_a": "agent executing a packed story",
+    "i_want": "the pack to list which paths I may write, relative to this working copy",
+    "so_that": "I stay inside this copy's src/ and archive/, which is the same sandbox a future worktree will use",
+    "ac": [
+      "bin/pack stdout contains a Write-set heading that lists src/, archive/evidence/, and archive/packs/",
+      "bin/pack stdout states those paths are relative to this working-copy root",
+      "bin/pack stdout states this story's status may be set to in_progress, review, or blocked",
+      "bin/pack stdout states status done is forbidden",
+      "bin/pack stdout contains a Do-not-write heading that lists METHOD.md and bin/",
+      "METHOD.md P-RUN names the same write-set",
+      "bin/adapt followed by bin/verify exits 0"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "Existing stories need no new fields for this story to pass",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-22",
+    "title": "Optional scope.touch and scope.forbid on stories",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "ready",
+    "as_a": "operator packing an implementation story",
+    "i_want": "an optional scope object with touch and forbid path-prefix arrays",
+    "so_that": "pack prints the paths the agent may edit, and those prefixes stay valid in a later git worktree of the same repo",
+    "ac": [
+      "AMENDMENTS.md records optional schema field scope with keys touch and forbid, each an array of path prefixes",
+      "METHOD.md states scope prefixes are relative to the working-copy root",
+      "A story object without scope still gets bin/gate exit 0 (no BLOCKER)",
+      "bin/gate prints MINOR when status is backlog or ready and scope is missing or both arrays are empty",
+      "bin/pack prints a Scope section listing each touch prefix and each forbid prefix when present",
+      "bin/pack prints 'Scope: unset' when the field is absent",
+      "bin/verify exits 0 on this repo while existing stories have no scope key"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "METHOD.md §2 story schema line names the optional scope field",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-23",
+    "title": "Overview shows image evidence for review stories",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "ready",
+    "as_a": "operator reviewing a UI story",
+    "i_want": "overview Needs-you to embed the newest png, jpg, or webp next to the evidence quote",
+    "so_that": "I can judge a screenshot from file:// without opening the chat",
+    "ac": [
+      "When archive/evidence/ has US-xx-*.png or .jpg or .webp and the story status is review, overview.html includes an img tag whose src is a relative path to the newest matching file",
+      "When a US-xx-*.md evidence bundle exists, the first three lines still appear quoted in Needs-you",
+      "A review story with only markdown evidence has no img tag and no broken image",
+      "overview.html stays one file, opens from file://, and has no script src attribute",
+      "bin/render runs and bin/verify exits 0"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "Needs-you section set is unchanged aside from the img tag",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-24",
+    "title": "Matrix and README list every tested harness and model",
+    "epic": "E5",
+    "priority": "p0",
+    "status": "ready",
+    "as_a": "operator reading README or the testing matrix",
+    "i_want": "docs/testing-matrix.md and README to name every harness and model that was tested, including those on the website",
+    "so_that": "in-repo provenance matches the tests that happened, not a stale subset",
+    "ac": [
+      "docs/testing-matrix.md names these harnesses: Open WebUI + Open Terminal, Hermes, OpenCode, Codex, Claude Code, Amp Code, Grok Build, Factory Droid",
+      "docs/testing-matrix.md names these models: Grok 4.6, Claude Opus, Claude Fable, GPT-5.5, GPT-5.6, Qwen3.8-27B, Kimi 3, Ox Alpha / GLM 5.3 Flash, Qwen 3.8",
+      "Existing numbered P2 arms in docs/testing-matrix.md remain",
+      "Harnesses or models not in those numbered arms are listed as operator-attested PASS, not given invented entry-mode or scope cells",
+      "README.md names no harness or model that is absent from docs/testing-matrix.md",
+      "docs/testing-matrix.md contains a line stating it is the only in-repo source for harness and model pass claims",
+      "Editing keel.monkeebrain.com is out of scope"
+    ],
+    "dod": [
+      "No new bin/ command",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-25",
+    "title": "One writer per working copy; worktrees named as later isolation",
+    "epic": "E5",
+    "priority": "p1",
+    "status": "ready",
+    "as_a": "staff member opening a keel repo",
+    "i_want": "METHOD.md to forbid concurrent writes to data/stories.json inside one working copy, and to name git worktrees as isolation for later parallel agents",
+    "so_that": "two processes in one copy stay unsupported, and adding worktrees later does not reverse this rule",
+    "ac": [
+      "METHOD.md §2 or §3 states concurrent writes to data/stories.json inside one working copy are unsupported",
+      "METHOD.md states parallel agents isolate via git worktrees or separate clones, then git pull --ff-only and git push",
+      "METHOD.md states creating a worktree is not required for 1:1 sessions",
+      "docs/tips-and-tricks.md has an entry that states both the one-writer-per-copy rule and the worktree isolation path",
+      "This story does not create a worktree, does not add bin/worktree, does not split stories.json, and does not create data/stories/",
+      "bin/adapt then bin/verify exits 0"
+    ],
+    "dod": [
+      "No schema change",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]
