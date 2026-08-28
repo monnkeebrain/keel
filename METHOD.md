@@ -3,7 +3,7 @@
 Operating manual for any agent (or human) working in this repo.
 Adapters are generated from this file. Do not edit adapters directly.
 
-Status: v0.2 — protocols defined, toolchain live. Keep every section
+Status: v0.1.0 — protocols defined, toolchain live. Keep every section
 minimal enough to be unambiguous; ambiguity here becomes thrash in
 every future session.
 

@@ -91,5 +91,15 @@ This log is the only legitimate input for changing METHOD.md
   shell and hung; the agent detected the hang, killed the process, reran
   with pager disabled, and completed bootstrap correctly.
 - Disposition: noted + clarified — laws/stack.md Runtime gains:
-  git inspection runs with --no-pager (or GIT_PAGER=cat); agent shells
+  git inspection runs with `--no-pager` (or `GIT_PAGER=cat`); agent shells
   have no TTY.
+
+## F-007 · 2026-08-28 · US-19 run · bin/state
+- Class: protocol_bug
+- What happened: After setting US-19 to review, `bin/state` raised
+  KeyError: 'blocked' at ids_by['review'] + ids_by['blocked'] because
+  the join used direct keys while the guard used .get.
+- What the method should have prevented: writers of STATE.md must tolerate
+  any missing status bucket; first review-without-blocked story hit this.
+- Disposition: noted + fixed same commit (join uses .get(..., [])).
+  No METHOD change. Anti-overfit: single occurrence.

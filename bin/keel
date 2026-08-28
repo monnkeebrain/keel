@@ -182,7 +182,7 @@ def cmd_state(args):
         f"- Generated at: {NOW():%Y-%m-%d %H:%M}Z",
         f"- Phase: {phase}",
         f"- Open intents: {by.get('review', 0)} review · {by.get('blocked', 0)} blocked"
-        + (f" ({', '.join(ids_by['review'] + ids_by['blocked'])})" if (ids_by.get('review') or ids_by.get('blocked')) else ""),
+        + (f" ({', '.join(ids_by.get('review', []) + ids_by.get('blocked', []))})" if (ids_by.get('review') or ids_by.get('blocked')) else ""),
         f"- Active work: {by.get('in_progress', 0)}"
         + (f" ({', '.join(ids_by['in_progress'])})" if ids_by.get('in_progress') else ""),
         f"- Ready to launch: {ready}" + (f" ({', '.join(ids_by['ready'])})" if ready else ""),
@@ -418,6 +418,42 @@ def cmd_verify(args):
         line("WARN", "overview.html older than store — run bin/render")
     else:
         line("PASS", "overview.html up to date")
+
+    vf = ROOT / "VERSION"
+    ver = None
+    if not vf.exists():
+        line("FAIL", "VERSION file missing")
+    else:
+        vlines = vf.read_text(encoding="utf-8").splitlines()
+        if len(vlines) != 1 or not re.fullmatch(r"\d+\.\d+\.\d+", vlines[0].strip()):
+            line("FAIL", "VERSION must be one line matching N.N.N")
+        else:
+            ver = vlines[0].strip()
+            line("PASS", f"VERSION is {ver}")
+
+    method_path = ROOT / "METHOD.md"
+    status_line = None
+    if method_path.exists():
+        status_line = next((l for l in method_path.read_text(encoding="utf-8").splitlines()
+                            if l.startswith("Status:")), None)
+    if ver is None:
+        line("FAIL", "METHOD Status line not checked (no VERSION)")
+    elif not status_line:
+        line("FAIL", "METHOD.md has no Status line")
+    elif ver not in status_line:
+        line("FAIL", f"METHOD.md Status line does not contain VERSION {ver}")
+    else:
+        line("PASS", "METHOD.md Status line contains VERSION")
+
+    boot = subprocess.run([sys.executable, str(ROOT / "bin" / "keel"), "boot"],
+                          capture_output=True, text=True)
+    needle = f"keel v{ver}" if ver else None
+    if ver is None:
+        line("FAIL", "boot version not checked (no VERSION)")
+    elif needle not in (boot.stdout or ""):
+        line("FAIL", f"bin/boot stdout missing '{needle}'")
+    else:
+        line("PASS", "bin/boot stdout contains keel v + VERSION")
 
     print(f"VERIFY {'FAIL' if fails else ('WARN' if warns else 'PASS')} · {fails} fail · {warns} warn")
     sys.exit(1 if fails else 0)
