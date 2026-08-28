@@ -3,6 +3,14 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-015 · 2026-08-28 · v0.1.1 cut: alpha disclaimer and changelog
+Rationale: clones were reading "method core proven" with no version
+match to a changelog and no risk label.
+Consequences: VERSION is 0.1.1; METHOD Status and bin/boot agree;
+README states alpha / work in progress / use at own risk above Status;
+Changelog lists US-19..25 plus F-007 · D-014.
+Refs: US-26; archive/evidence/US-26-run01.md.
+
 ## D-014 · 2026-08-28 · bin/state must tolerate empty status buckets
 Rationale: F-007 — first review-without-blocked story crashed `bin/state`
 on `ids_by['blocked']`. The fix shipped inside the US-19 review commit
