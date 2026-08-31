@@ -939,7 +939,7 @@
     "title": "METHOD: cwd is given; agent does not create worktrees",
     "epic": "E8",
     "priority": "p0",
-    "status": "review",
+    "status": "done",
     "as_a": "agent booting in a keel repo",
     "i_want": "METHOD to say the working-copy cwd is provided by the operator or harness and that I must not create a git worktree as a KEEL verb",
     "so_that": "KEEL stays harness-agnostic and I do not spawn isolation machinery",

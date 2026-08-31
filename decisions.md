@@ -3,6 +3,16 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-028 · 2026-08-31 · cwd is given; agent does not create worktrees
+Rationale: KEEL is harness-agnostic. Isolation checkouts are an
+input, not a KEEL verb.
+Consequences: METHOD §2 states the cwd comes from the operator or
+harness and the agent does not create a git worktree as a KEEL verb.
+Adapters: must not run git worktree add. Operator-approved exception:
+US-38 scope expanded to `bin/keel` `_core_text` because adapt does
+not read METHOD.md. No new command.
+Refs: US-38; archive/evidence/US-38-run01.md.
+
 ## D-027 · 2026-08-28 · E8 is the agent loop, not a worktree CLI
 Rationale: `bin/wt`, path-import, and agent branches were harness
 engineering. KEEL is harness-agnostic. The cwd is an input.
