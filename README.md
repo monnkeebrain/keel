@@ -121,6 +121,10 @@ v0.1.2
 - US-34 Optional story depends_on; pack and claim refuse if predecessor is not done
 - US-35 Operator accept E-n, park, and reassign
 - US-36 Overview groups stories by epic
+- US-37 VERSION 0.1.2, README current, BOOT line includes epics
+- US-38 cwd is given; agent does not create worktrees
+- US-39 bin/review flips in_progress to review
+- Human and agent guides; README proof screenshot
 
 v0.1.1
 - US-19 VERSION file is the single version string
