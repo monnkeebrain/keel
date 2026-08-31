@@ -1,7 +1,7 @@
-# E8 — Agent loop (final plan, not METHOD yet)
+# E8 — Agent loop (plan accepted, not METHOD yet)
 
-Status: replaces the worktree-CLI candidate. Not in force until
-signed stories land in METHOD.md and `bin/`.
+Status: operator accepted. Not in force until signed US-38 and US-39
+land in METHOD.md and `bin/`.
 
 Tier B. Invariants do not move. Abandoned US-27..30 stay
 abandoned. Those ids are not reused.

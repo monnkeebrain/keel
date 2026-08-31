@@ -933,5 +933,67 @@
       "No new bin/ command",
       "Accepted via accept flow with evidence list"
     ]
+  },
+  {
+    "id": "US-38",
+    "title": "METHOD: cwd is given; agent does not create worktrees",
+    "epic": "E8",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "agent booting in a keel repo",
+    "i_want": "METHOD to say the working-copy cwd is provided by the operator or harness and that I must not create a git worktree as a KEEL verb",
+    "so_that": "KEEL stays harness-agnostic and I do not spawn isolation machinery",
+    "scope": {
+      "touch": [
+        "METHOD.md"
+      ],
+      "forbid": [
+        "bin/"
+      ]
+    },
+    "ac": [
+      "METHOD.md states the working-copy cwd is provided by the operator or harness",
+      "METHOD.md states the agent does not create a git worktree as a KEEL verb",
+      "bin/adapt writes adapters that contain must not run git worktree add",
+      "bin/verify exits 0",
+      "This story does not add bin/review or bin/wt"
+    ],
+    "dod": [
+      "No new bin/ command",
+      "Accepted via accept flow with evidence list"
+    ]
+  },
+  {
+    "id": "US-39",
+    "title": "bin/review flips in_progress to review",
+    "epic": "E8",
+    "priority": "p0",
+    "status": "backlog",
+    "as_a": "agent finishing a packed story",
+    "i_want": "bin/review US-xx to set in_progress to review without hand-editing the store",
+    "so_that": "status moves through bin/ like claim does",
+    "depends_on": [
+      "US-38"
+    ],
+    "scope": {
+      "touch": [
+        "bin/",
+        "METHOD.md"
+      ],
+      "forbid": []
+    },
+    "ac": [
+      "bin/review US-xx when status is in_progress prints REVIEW US-xx and sets status to review",
+      "bin/review US-xx when status is not in_progress exits non-zero and leaves the store bytes unchanged",
+      "Pack write-set names bin/claim and bin/review as the status verbs and still says Status done is forbidden",
+      "METHOD.md P-RUN names bin/review before waiting for accept",
+      "bin/review wrapper matches existing bin/claim style",
+      "bin/adapt then bin/verify exits 0",
+      "No bin/wt file exists"
+    ],
+    "dod": [
+      "Stdlib Python only",
+      "Accepted via accept flow with evidence list"
+    ]
   }
 ]

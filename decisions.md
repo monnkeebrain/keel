@@ -3,6 +3,16 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-027 · 2026-08-28 · E8 is the agent loop, not a worktree CLI
+Rationale: `bin/wt`, path-import, and agent branches were harness
+engineering. KEEL is harness-agnostic. The cwd is an input.
+Consequences: plan `docs/e8-isolation.md` accepted. E8 stories
+US-38 (METHOD: cwd given, no worktree-add) and US-39 (bin/review).
+Story-per-file and WIP 3 wait for a real two-cwd collision.
+Abandoned US-27..30 stay abandoned. Not METHOD until US-38/39
+are signed and taken.
+Refs: docs/e8-isolation.md; docs/system.md; D-025.
+
 ## D-026 · 2026-08-28 · v0.1.2 cut: E7 changelog, README current
 Rationale: clones still saw 0.1.1 and a README that said entering P3
 and a BOOT line without epics after E7 had landed.

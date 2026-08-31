@@ -100,7 +100,7 @@ KEEL does not spawn agents. Cwd is an input. E8 is `bin/review` plus
 a METHOD sentence that worktrees/clones are harness/operator.
 No `bin/wt`. Story-per-file and WIP 3 wait for a real two-cwd
 collision. Plan: `docs/e8-isolation.md`. Tower: `docs/system.md`.
-- Exit gate: operator accepts this plan; then E8 stories drafted.
+- Exit gate: operator accepted 2026-08-28; E8 stories US-38 US-39 drafted unsigned.
 
 ## Standing metrics (only four)
 
