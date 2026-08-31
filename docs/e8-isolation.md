@@ -1,7 +1,6 @@
-# E8 — Agent loop (plan accepted, not METHOD yet)
+# E8 — Agent loop
 
-Status: operator accepted. Not in force until signed US-38 and US-39
-land in METHOD.md and `bin/`.
+Status: US-38 and US-39 accepted (METHOD + `bin/review`). In force.
 
 Tier B. Invariants do not move. Abandoned US-27..30 stay
 abandoned. Those ids are not reused.
