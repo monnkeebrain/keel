@@ -95,11 +95,11 @@ Plan: `docs/epic-protocol.md`. Not in METHOD until a signed story.
 MVP is 1H+1A chaining. Store: `data/epics/E-n.json`. WIP: 1, then 3 at E8.
 - Exit gate: plan accepted by operator; then E7 stories drafted and signed.
 
-### P7 — Isolation / 1H+N (candidate)
-Epic = isolation unit. Worktrees multiply `src/`+`archive/` editors.
-Main is the only writer of the store. `bin/wt add|ls|present|accept|reject`.
-Join = path-import, not whole-branch merge. Pull of main stays ff-only.
-1:1 creates no worktree. Plan: `docs/e8-isolation.md`.
+### P7 — Agent loop (candidate)
+KEEL does not spawn agents. Cwd is an input. E8 is `bin/review` plus
+a METHOD sentence that worktrees/clones are harness/operator.
+No `bin/wt`. Story-per-file and WIP 3 wait for a real two-cwd
+collision. Plan: `docs/e8-isolation.md`. Tower: `docs/system.md`.
 - Exit gate: operator accepts this plan; then E8 stories drafted.
 
 ## Standing metrics (only four)

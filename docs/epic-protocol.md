@@ -173,15 +173,12 @@ unchanged.
 
 ## 6. Multi-agent (each agent one epic)
 
-| Layer | Rule |
-|---|---|
-| Dispatch | Agent A `take E-a`, agent B `take E-b`. Never two epics in one working copy. |
-| Isolation | Worktrees/clones + `ff-only`. E8. |
-| Planning | Touch disjointness. Mis-planned overlap → park the second epic, do not wait. |
-| Epic files | `data/epics/E-n.json` — two epic-claims do not share a file. |
-| Story files | Still one `stories.json` until E8. **No two-agent dogfood until story-per-file.** |
-| WIP | 1 in-flight epic until E8, then max **3**. |
-| Present | Each agent presents *its* epic. Human may `accept E-a` and partial `E-b` in one sitting. |
+The harness or operator provides a cwd. KEEL does not create
+worktrees. One writer per working copy. Two agents ⇒ two cwds,
+then `take E-a` / `take E-b`, disjoint touch, ff-only.
+
+Story store stays one `stories.json` until two cwds collide.
+WIP stays 1 until then. See `docs/system.md` and `docs/e8-isolation.md`.
 
 ---
 
@@ -219,10 +216,11 @@ Draft only after operator accepts this plan:
    (does not park) if a third is not logical or has `depends_on`.
    Human `accept E7` *or* partial + park/reassign. Resume suite item.
 
-**E8 — Isolation** (after E7 green): story-per-file → worktree →
-claimer → clerk. WIP cap becomes 3.
+**E8 — Agent loop:** `bin/review`; cwd is given, not created.
+Story-per-file / WIP 3 only after a real two-cwd collision.
+See `docs/e8-isolation.md`.
 
-**E9 — Official skill** after E7 is in METHOD.
+**E9 — Official skill** after the agent loop is boring.
 
 **US-18** first *use* of the loop, not inside E7.
 

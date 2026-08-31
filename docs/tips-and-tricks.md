@@ -48,4 +48,5 @@ Onboarding friction is a method bug, not a staff failing.
 Concurrent writes to `data/stories.json` inside one working copy are
 unsupported. Parallel agents isolate via git worktrees or separate
 clones, then `git pull --ff-only` and `git push`. 1:1 sessions do not
-create a worktree.
+create a worktree. The harness or operator creates extra cwds. KEEL
+does not run `git worktree add`.
