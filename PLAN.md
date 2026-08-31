@@ -96,11 +96,12 @@ MVP is 1H+1A chaining. Store: `data/epics/E-n.json`. WIP: 1, then 3 at E8.
 - Exit gate: plan accepted by operator; then E7 stories drafted and signed.
 
 ### P7 — Isolation / 1H+N (candidate)
-Story-per-file, then `bin/review` + projection commit rule, then
-WIP 3. No claimer field, no `claim --worktree`. Plan:
-`docs/e8-isolation.md`. Not METHOD until signed E8 stories.
-Abandoned US-27..30 stay abandoned.
-- Exit gate: plan accepted by operator; then E8 stories drafted and signed.
+Worktrees/clones multiply `src/`+`archive/` editors. Main is the
+only writer of the canonical store. Isolation unit = epic.
+`bin/wt add|ls|present|accept|reject`. Pull of main stays ff-only;
+operator join is a merge (no squash). 1:1 creates no worktree.
+Story-per-file deferred. Plan: `docs/e8-isolation.md`.
+- Exit gate: plan accepted by operator; then E8 stories drafted.
 
 ## Standing metrics (only four)
 
