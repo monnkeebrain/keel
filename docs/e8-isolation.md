@@ -1,242 +1,239 @@
-# E8 — Isolation (candidate, not METHOD yet)
+# E8 — Isolation (final plan, not METHOD yet)
 
-Status: plan, rewritten around the worktree review. Not in force.
-No `bin/wt`, no merge-at-accept, no write-scope verify until signed
-E8 stories land in METHOD.md and `bin/`.
+Status: final candidate. Not in force until signed E8 stories land
+in METHOD.md and `bin/`. Tier B. Invariants do not move.
 
-Tier B. Invariants do not move. Abandoned US-27..30 stay abandoned.
-E8 gets **new** story ids.
+Abandoned US-27..30 stay abandoned. E8 gets new ids.
 
-E7 is accepted. 1H × 1A × 1 working copy works. Serial model-swap
-works. Parallel agents do not.
-
----
-
-## 0. The load-bearing rule
-
-> **Worktrees (or clones) multiply the places where `src/` and
-> `archive/` get edited. They do not multiply the places where the
-> canonical store gets written.**
-
-Canonical store, main worktree only: `data/`, `STATE.md`,
-`decisions.md`, `FAILURES.md`, `laws/`, `METHOD.md`, `overview.html`,
-`AMENDMENTS.md`, adapters.
-
-Agent checkouts may write: `src/**`, `archive/packs/US-xx-*`,
-`archive/evidence/US-xx-*`.
-
-1:1 on main is unchanged: that checkout *is* the store writer.
-
-This rule makes method-file merge conflicts structurally impossible.
-`bin/verify` on an `agent/*` branch: `git diff main --name-only`
-must be inside the allowed prefixes, or FAIL. Evidence, not vibe.
-
-Story-per-file **does not pay rent** under this rule (only main
-writes `data/stories.json`). Deferred. Same for `claimer.*` and
-`bin/review`.
+This plan is written from dogfood (building KEEL with KEEL), not
+from a story-grain worktree sketch. Epic is the dispatch unit.
+Worktrees are the isolation primitive. `bin/wt` is the CLI.
 
 ---
 
-## 1. What the external review got right
+## 1. Why this exists
 
-- Worktrees are the right primitive: shared object DB, cheap,
-  disposable, same laws/history, isolated index/HEAD.
-- Human stays accept key **and** dispatch key. Creating the
-  isolation checkout is the claim.
-- Thin `bin/wt` (add / ls / accept / reject), not an orchestrator.
-- Artifact-path evidence is the stable citation (already KEEL).
-- Pack already inlines laws — that *is* the pin for mid-flight
-  law bumps. Grandfather. Do not rebase the agent.
-- Cleanup through `bin/wt`, not hand-deleted folders.
-- Needs a real `.git` (ZIP path: `bin/init` already creates one).
+E7 made `take E-n` real for **1 human × 1 agent × 1 working copy**.
+Serial model-swap already works. Two agents both rewrite
+`data/stories.json`, `STATE.md`, and `overview.html`. ff-only
+rejects the second push. That is the bug.
+
+Delegating **stories** to agents is legal (`take US-xx` stays).
+Delegating **epics** is the product. One agent, one epic, one
+isolation checkout. Stories chain inside it.
 
 ---
 
-## 2. Logical mistakes (and the KEEL fix)
+## 2. Load-bearing rule
 
-**Mistake 1 — one worktree per story kills E7.**
-Chaining is the point of `take E-n`. Per-story worktrees restore
-the dispatch tax. **Unit of isolation is the epic.** One agent,
-one branch `agent/E-n`, one worktree (or clone). Stories chain
-inside it. `take US-xx` stays legal as a hotfix on main.
+> Isolation checkouts multiply editors of `src/` and `archive/`.
+> They do not multiply writers of the canonical store.
 
-**Mistake 2 — `git pull --ff-only` cannot land the second epic.**
-Two agents branch from `main` at M. Operator fast-forwards A.
-B is not a descendant of new main. ff-only **always fails** for
-N>1. `--no-ff` merge is required at join, or a rebase that
-rewrites hashes.
-**Fix:** split the git rule. Agents and every clone **pull main
-ff-only, never merge.** Operator join of `agent/E-n` into main
-is an **operator-only merge** (`bin/wt accept`). Do not squash.
-Do not rebase at accept. Agent commit hashes stay on the branch.
-Prefer artifact-path evidence; record the merge commit in the
-accept residue.
+**Main** (the checkout the operator reads) is the only writer of:
+`data/`, `STATE.md`, `decisions.md`, `FAILURES.md`, `laws/`,
+`METHOD.md`, `overview.html`, `AMENDMENTS.md`, adapters.
 
-**Mistake 3 — skipping `review`.**
-"in_progress at wt create, done at merge" drops Needs-you.
-**Fix:** agent stops when no unlocked+logical story remains,
-pushes `agent/E-n`, prints `PRESENT E-n`. Does not write the
-store. Operator on main runs `bin/wt present E-n` (or `bin/wt
-ls` + render) which sets epic `review` from the branch's
-evidence index. Then judge. `bin/wt accept` is still operator.
+**Agent isolation checkout** may write:
+`src/**`, `archive/packs/<story-id>-*`, `archive/evidence/<story-id>-*`.
 
-**Mistake 4 — partial accept vs one branch.**
-All epic src/ lives on `agent/E-n`. Cherry-picking accepted
-stories is not a method. **Fix:** the branch contains only work
-the agent is presenting. Parked/unlogical stories were not
-committed. Partial = operator park/reassign leftover **ids**
-on main, merge the branch (presented code only). If the agent
-mixed parked work into src/, reject the epic, do not merge.
+`bin/wt accept` **imports those prefixes only**. It never merges
+the agent branch as a whole. A forgotten verify must not be able
+to land a store edit.
 
-**Mistake 5 — "src/ overlap is a normal merge conflict."**
-KEEL already forbids overlapping `scope.touch` on two non-done
-epics (`epic-gate`). Overlap at merge is a **planning bug**.
-Park/reassign; do not "just resolve."
+1:1 on main is unchanged. That checkout *is* the store writer.
+Creating a worktree is **not** required for 1:1.
 
-**Mistake 6 — worktrees-only.**
-Worktrees are same-machine. Two laptops = clones. **Same
-write-scope contract.** `bin/wt add` is sugar for worktrees;
-a clone on `agent/E-n` is the other legal isolation. 1:1 still
-creates neither.
-
-**Mistake 7 — `--no-ff` to save evidence hashes.**
-Hashes survive a true merge without squash. Artifact paths
-already survive everything. Don't squash. Don't rebase at
-accept. `--no-ff` vs `--ff` is secondary; the second epic
-cannot ff anyway.
-
-**Mistake 8 — `bin/wt accept` marks done in one blast.**
-Merge can fail. **Fix:** refuse status change if merge fails.
-Sequence: merge → (fail: stop) → epic-accept semantics →
-state/render → `git worktree remove`. Operator-only. Adapters
-forbid agents from `wt accept` / `wt reject` / `wt add`.
-
-**Mistake 9 — archive layout change.**
-`archive/evidence/US-xx-*` and `archive/packs/US-xx-*` are
-already unique. Do not invent `archive/US-xx/`.
-
-**Mistake 10 — BOOT identity as `wt-US-14`.**
-CLAIM already prints root + HEAD. BOOT already lists active
-epics. Don't fork the BOOT schema. Optional: print `root`
-on every boot (cheap). Attribution = branch name `agent/E-n`.
+Story-per-file, `claimer.*`, and `bin/review` do **not** pay rent
+under this rule. Deferred.
 
 ---
 
-## 3. Mapping onto the five beats (epic grain)
+## 3. Dogfood that this plan is answering
 
-1. **P-BOOT** — agent opens the isolation checkout, pulls
-   ff-only, emits the existing BOOT line. Root is in git.
-2. **P-STORY / P-EPIC-SIGN** — main only. Operator signs
-   stories and the epic, then dispatches.
-3. **P-EPIC-RUN** — operator `bin/wt add E-n` (worktree +
-   branch `agent/E-n` + epic `in_progress`). Agent packs
-   (read-only), writes `src/` + their archive prefixes,
-   commits on `agent/E-n`. Does **not** run claim/review/
-   state/render/epic-present/epic-accept. Chains unlocked
-   logical stories by packing the next one; evidence files
-   are the per-story grain.
-4. **P-EPIC-PRESENT** — agent pushes, prints PRESENT, stops.
-   Operator on main projects review (evidence index on the
-   branch) onto the store.
-5. **P-EPIC-ACCEPT / P-END** — operator `bin/wt accept E-n`
-   or partial park/reassign then accept. Merge, then store,
-   then state/render, then remove worktree. Decisions land
-   on main.
-
-`take US-xx` on main (hotfix) does not create a worktree.
+- Agents piggyback (F-007). Write-scope is a `bin/verify` FAIL on
+  the agent branch, not a sentence in a pack.
+- Agents hand-edit the store whenever they can. So they must not
+  be able to *land* those edits. Local scratch status in the
+  worktree is allowed so chaining/`depends_on` still run; join
+  discards `data/`.
+- Per-story accept caught real defects. Keep per-story evidence.
+  Do not merge AC lists. Batch *judgment* of an epic after
+  present.
+- Operator-only park/reassign/accept held when adapters forbade
+  the commands. Same for `bin/wt add|accept|reject`.
+- `take E-n` chaining is the tax cut. Isolation unit = epic, not
+  story. Per-story worktrees would undo E7.
+- Unevidenced done is void. Artifact path stays the citation.
+  Do not squash. Do not rebase agent commits at accept.
 
 ---
 
-## 4. Thin CLI
+## 4. Git rules (split, on purpose)
 
-One new dispatcher, stdlib, wrappers if needed:
+**Pull of `main`:** `git pull --ff-only`. Never merge. Agents,
+clones, main — everyone. This rule does **not** change.
+
+**Join at accept:** not a fast-forward of `main` to `agent/E-n`
+(the second epic is never a descendant). Not a whole-branch
+merge (that is how `data/` sneaks in).
+
+`bin/wt accept E-n`:
+
+1. List files that differ between `main` and `agent/E-n`.
+2. FAIL if any path is outside the allowed prefixes.
+3. FAIL if those paths conflict with `main` (planning bug:
+   touch overlap escaped `epic-gate`).
+4. Import allowed paths onto `main`, commit
+   `accept E-n · import src+archive`.
+5. Run today's epic-accept rules on the **main** store
+   (review/done only; refuse in_progress/ready/backlog/blocked
+   leftovers).
+6. `bin/state` && `bin/render`.
+7. `git worktree remove` (not hand-delete).
+
+Linear `main`. Agent hashes remain on `agent/E-n` until the
+operator deletes the branch. Artifact paths on main are the
+evidence that matters.
+
+---
+
+## 5. The loop
+
+**Dispatch (operator, main):** epic signed, `bin/wt add E-n`.
+Creates worktree + branch `agent/E-n`, sets epic `in_progress`,
+prints path + BOOT cue. Refuses if in-flight epics (BOOT active:
+`in_progress`+`review`) would exceed 3. Refuses if this checkout
+is already a linked worktree.
+
+**Run (agent, isolation checkout):** P-BOOT, `git pull --ff-only`
+of main (if it fails, stop). `bin/epic-pack` / `bin/pack` (read
+the store; may scratch-claim locally). Write `src/` + archive
+prefixes. One story at a time. Evidence per story. Do not run
+`wt add|accept|reject`, park, reassign, epic-accept. Do not
+commit store files expecting them to land.
+
+**Present:** no unlocked+logical story left. Agent commits,
+pushes `agent/E-n`, prints `PRESENT E-n`, stops. Does not write
+the main store.
+
+**Judge (operator, main):** `bin/wt present E-n` sets epic
+`review` from the branch evidence index. Overview Needs-you.
+`bin/wt accept E-n` or partial: park/reassign leftovers on
+main, then accept. Partial is **status on main**. The import
+is the whole presented `src/`+archive. If parked work is mixed
+into `src/`, **reject, do not import.**
+
+**Hotfix:** `take US-xx` on main. No worktree.
+
+---
+
+## 6. CLI (thin)
+
+One dispatcher, stdlib, same wrapper pattern as `epic-claim`.
 
 | Command | Who | Effect |
 |---|---|---|
-| `bin/wt add E-n` | **operator** | `git worktree add -b agent/E-n ../wt-E-n main`; epic → in_progress; refuse if WIP would exceed 3; print root + BOOT cue |
-| `bin/wt ls` | anyone | worktrees/branches with epic id + status; render In-flight reads this |
-| `bin/wt present E-n` | operator (or a read of the branch) | epic → review if evidence index exists; does not merge |
-| `bin/wt accept E-n` | **operator** | merge `agent/E-n` into main (no squash); then today's epic-accept rules; state; render; `worktree remove` |
-| `bin/wt reject E-n` | **operator** | keep or drop branch; park/reassign as operator says; do not merge |
+| `bin/wt add E-n` | operator | worktree + `agent/E-n` + epic in_progress; WIP 3 |
+| `bin/wt ls` | anyone | id, path, branch, epic status |
+| `bin/wt present E-n` | operator | epic → review from evidence index; no import |
+| `bin/wt accept E-n` | operator | path-import + epic-accept + state/render + remove |
+| `bin/wt reject E-n` | operator | no import; park/reassign as named; keep branch unless `--drop` |
 
-`bin/verify`: on `agent/*`, allowed path prefixes only.
+`bin/verify`: `agent/*` vs main, allowed prefixes only (informational
+on the branch; **blocking** inside `wt accept` step 2).
 
-Existing `epic-claim` / `epic-present` / `epic-accept` stay for
-**1:1 on main**. `bin/wt *` is the N-agent path. Do not make
-1:1 create a worktree.
+Adapters: agent must not run `wt add`, `wt accept`, `wt reject`.
 
-WIP 3 lives on `bin/wt add`, not on story claim. In-flight =
-epic `in_progress` or `review` (BOOT active), counting both
-main 1:1 epics and wt epics.
+Default path: sibling `../<repo>-E-n`. Override `--path`. Print
+the path; the harness must open **that** folder. Refuse `wt add`
+if `.git` is missing.
 
----
-
-## 5. 1 human × N agents
-
-| Layer | Rule |
-|---|---|
-| Human | One operator. Dispatch (`wt add`) and accept (`wt accept`) stay spoken+bin. |
-| Dispatch | One epic per isolation checkout. Never two epics in one checkout. |
-| Isolation | Worktree **or** clone on `agent/E-n`. |
-| Store | Main only. `data/stories.json` stays one file. |
-| Agent writes | `src/`, `archive/{packs,evidence}/US-xx-*`. |
-| Pull | Everyone: `git pull --ff-only` of **main**. |
-| Join | Operator merge of `agent/E-n` at accept. Never squash. |
-| Stall | Touch overlap at epic-sign. Not a merge-resolution party. |
-| Present | Agent pushes and stops. Operator projects review. |
-| WIP | Max 3 in-flight epics after the WIP story. |
+Existing `epic-claim` / `epic-present` / `epic-accept` remain the
+**1:1 on main** path. Do not delete them. Do not make 1:1 call `wt`.
 
 ---
 
-## 6. Law changes mid-flight
+## 7. Flaws that remain (do not pretend)
 
-Pack is the contract (laws inlined, archived). Grandfather that
-pack. New laws apply to the next pack, not a rebase of a running
-agent. If the operator needs them mid-epic: reject, re-pack on
-new main, new `wt add`.
+**F1. Two loops.** 1:1 on main vs N on worktrees. Two P-END
+commit sets. That is real complexity. It pays rent: 1:1 is the
+common path and must not grow a worktree ritual. Document both.
+Adapters: do not `wt add` unless the operator said so.
+
+**F2. Scratch store vs landed store.** Chaining and `depends_on`
+need status flips during the run. Those flips happen in the
+worktree copy and **die at join**. Main never saw `review` until
+`wt present`. If the agent "accepts" themselves in the scratch
+copy, it does not land. Main is truth. Still teach "do not mark
+done" — verify cannot catch a scratch `done`.
+
+**F3. Partial accept cannot un-mix `src/`.** If the agent committed
+parked work, reject the epic. There is no honest cherry-pick
+protocol. Scope.touch per story inside an epic is the mitigation,
+not a guarantee.
+
+**F4. Sibling worktree path vs GUI harnesses.** Hermes/project
+sidebars follow one folder. `../repo-E7` may be invisible until
+the operator opens it. `--path` exists because of this. Not
+solved by putting worktrees inside the repo (git add hazards).
+
+**F5. Conflict detection at import.** If `epic-gate` missed an
+overlap, import must FAIL, not overwrite. That check has to be
+real (merge-tree or equivalent), not a comment.
+
+**F6. Clones.** Worktrees are same-machine. Two machines = clone
+on `agent/E-n`, same write-scope, no `git worktree`. `bin/wt add`
+is worktree sugar only. Do not claim worktrees cover remote
+agents.
+
+**F7. WIP 3 is a human budget, not a scheduler.** Raising it
+before the throwaway two-agent arm is green would be the same
+class of miss as freezing a 1:1 skill before E7.
+
+**F8. `wt accept` blast radius.** Import + status + render +
+remove in one command is convenient and hard to undo. Sequence
+must stop before status if import fails. Removing the worktree
+last. No `--force` delete of operator data.
 
 ---
 
-## 7. Dogfood
+## 8. Out of E8
 
-Land write-scope verify + `bin/wt add/ls` on this repo as 1:1
-(no second agent yet). Then a two-copy arm on a **`bin/init`
-throwaway**: two epics, disjoint `scope.touch`, two worktrees,
-both PRESENT, operator `wt accept` E-a then E-b (second is a
-real merge). No squash. No merge commits on **pull**. Resume
-suite item. Until green, WIP stays 1.
-
----
-
-## 8. Out of this epic
-
-- Story-per-file, claimer, `bin/review` — no rent under this rule.
-- E9 official skill after E8 green.
-- US-18 workshop. Confirming A-004/A-005/A-006.
+- Story-per-file, claimer, `bin/review`
+- E9 official skill (after this is green)
+- US-18 workshop
+- Confirming A-004/A-005/A-006
+- MCP, orchestrator, message bus
 
 ---
 
-## 9. Proposed E8 stories (draft only after plan accept)
+## 9. Dogfood gate
 
-1. METHOD write-scope + split git rule (ff-only pull vs operator
-   join merge). 1:1 unchanged. No bin/wt yet.
-2. `bin/verify` FAIL if `agent/*` diff vs main leaves allowed
-   prefixes. Adapters: agent must not write the store.
-3. `bin/wt add` / `ls` / `present` / `accept` / `reject`. WIP 3
-   on `wt add`. `wt accept` = merge then epic-accept semantics.
-4. Render In-flight from `bin/wt ls` (fleet). Needs-you still
-   review/blocked + review epics.
+1. Land METHOD write-scope + `bin/wt` on this repo. 1:1 still
+   works with zero worktrees (regression).
+2. Throwaway `bin/init`: two epics, disjoint touch, two
+   worktrees, both PRESENT, operator `wt accept` E-a then E-b.
+   Second import must succeed with both `src/` trees present.
+   Forbidden-path commit on an agent branch must make accept
+   FAIL.
+3. Until that arm is green, WIP stays 1.
 
 ---
 
-## 10. Closed defaults (revise if you disagree)
+## 10. Stories (draft only after you accept this plan)
 
-1. Isolation unit = **epic**, not story.
-2. Store stays **one `stories.json`**. Main is the only writer.
-3. Join = **operator merge, no squash**. Pull of main stays
-   ff-only.
-4. 1:1 does **not** create a worktree.
-5. Clones remain legal (same write-scope).
-6. Two-agent arm on a throwaway. E9 after E8 green.
+1. METHOD: write-scope, split git rule, epic isolation unit,
+   1:1 creates no worktree. Adapters forbid `wt *` mutating
+   verbs. No `bin/wt` yet.
+2. `bin/wt add|ls` + WIP 3 on add + default sibling path +
+   `--path` + refuse if not main checkout / no `.git`.
+3. `bin/verify` + `wt accept` path-import (allowed prefixes,
+   conflict FAIL, no whole-branch merge) + `wt present` +
+   `wt reject`. Render In-flight can read `wt ls`.
+4. Throwaway two-agent arm documented as a resume-suite item
+   (may be operator-attested, like extra matrix rows).
 
-Draft E8 stories only after this plan is accepted.
+---
+
+Accept this plan or name the flaw that still blocks it.
+Do not sign E8 stories until then.
