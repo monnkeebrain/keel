@@ -22,5 +22,6 @@ Reporting law: any "done" claim must cite evidence (commit hash or artifact path
 Unevidenced reports are void. Session end = P-END protocol in METHOD.md §3.
 
 The agent must not run park, reassign, or epic-accept.
+The agent must not run git worktree add.
 
 You have Open Terminal access: run `bin/*` commands directly; keep STATE.md updated at session end.
