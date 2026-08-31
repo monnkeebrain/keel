@@ -228,6 +228,30 @@ def cmd_claim(args):
     print(f"HEAD {head}")
 
 
+def cmd_review(args):
+    arr = load_stories()
+    before = STORIES.read_bytes()
+    target = None
+    for s in arr:
+        if s.get("id", "").lower() == args.story_id.lower():
+            target = s
+            break
+    if target is None:
+        sys.exit(f"keel: story '{args.story_id}' not found in {STORIES.name}")
+    if target["status"] != "in_progress":
+        print(f"review refused · {target['id']} status is {target['status']} (need in_progress)",
+              file=sys.stderr)
+        if STORIES.read_bytes() != before:
+            STORIES.write_bytes(before)
+        sys.exit(1)
+    keys_before = set(target.keys())
+    target["status"] = "review"
+    if set(target.keys()) != keys_before:
+        sys.exit("keel: review must not add story fields")
+    save_stories(arr)
+    print(f"REVIEW {target['id']}")
+
+
 # ---------------------------------------------------------------- epic-gate / epic-claim
 EPIC_REQUIRED = ("id", "title", "goal", "stories", "depends_on", "scope", "status")
 
@@ -350,6 +374,7 @@ def build_story_pack(s):
     out.append("- src/")
     out.append("- archive/evidence/")
     out.append("- archive/packs/")
+    out.append("Status verbs: bin/claim (ready → in_progress), bin/review (in_progress → review).")
     out.append("This story's status may be set to in_progress or review.")
     out.append("Status done is forbidden.")
     out.append("Status blocked is operator-only.")
@@ -1028,6 +1053,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     g = sub.add_parser("gate"); g.add_argument("story_id"); g.set_defaults(fn=cmd_gate)
     c = sub.add_parser("claim"); c.add_argument("story_id"); c.set_defaults(fn=cmd_claim)
+    rv = sub.add_parser("review"); rv.add_argument("story_id"); rv.set_defaults(fn=cmd_review)
     eg = sub.add_parser("epic-gate"); eg.add_argument("epic_id"); eg.set_defaults(fn=cmd_epic_gate)
     ec = sub.add_parser("epic-claim"); ec.add_argument("epic_id"); ec.set_defaults(fn=cmd_epic_claim)
     epk = sub.add_parser("epic-pack"); epk.add_argument("epic_id"); epk.set_defaults(fn=cmd_epic_pack)

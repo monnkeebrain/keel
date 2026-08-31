@@ -117,12 +117,12 @@ ready without the sign commit.
 ### P-RUN Execution flow
 `bin/claim US-xx` (ready → in_progress; more than one in_progress ID is
 allowed) → `bin/pack US-xx` → execute within scope → verify each AC/DoD →
-report evidence list → operator accepts/rejects → status update +
-decision entry if material → commit `accept US-xx`.
+`bin/review US-xx` (in_progress → review) → operator accepts/rejects →
+status update + decision entry if material → commit `accept US-xx`.
 
 Default write-set (paths relative to this working-copy root): `src/`,
-`archive/evidence/`, `archive/packs/`. This story's status may be set to
-in_progress, review, or blocked. Status done is forbidden. Do not write
+`archive/evidence/`, `archive/packs/`. Status verbs: `bin/claim` and
+`bin/review`. Status done is forbidden. Do not write
 `METHOD.md` or `bin/` unless the story is about those paths.
 
 ### P-END Session end

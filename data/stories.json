@@ -967,7 +967,7 @@
     "title": "bin/review flips in_progress to review",
     "epic": "E8",
     "priority": "p0",
-    "status": "ready",
+    "status": "review",
     "as_a": "agent finishing a packed story",
     "i_want": "bin/review US-xx to set in_progress to review without hand-editing the store",
     "so_that": "status moves through bin/ like claim does",
