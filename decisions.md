@@ -3,6 +3,15 @@
 Newest first. Format: `## D-nn · YYYY-MM-DD · title` followed by
 Rationale / Consequences / Refs. Corrections via supersede, never edits.
 
+## D-029 · 2026-08-31 · bin/review is the in_progress → review verb
+Rationale: agents hand-edited the store to flip review. Claim already
+wrote in_progress; review was the missing twin.
+Consequences: `bin/review US-xx` sets in_progress → review and prints
+REVIEW. Other statuses refuse, store unchanged. Pack names claim and
+review as status verbs. METHOD P-RUN calls bin/review before accept.
+Done stays forbidden. Park stays operator-only. No bin/wt.
+Refs: US-39; archive/evidence/US-39-run01.md.
+
 ## D-028 · 2026-08-31 · cwd is given; agent does not create worktrees
 Rationale: KEEL is harness-agnostic. Isolation checkouts are an
 input, not a KEEL verb.
